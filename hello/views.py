@@ -27,7 +27,7 @@ def ilp():
         
     home0 = 1
     places = [19,24,13,15]
-    starttimeplaces = [60,1500,60,1500]
+    starttimeplaces = [60,1900,60,1500]
     endtimeplaces = [1980,1980,540,1980]
     staytimeplaces = [229,300,200,60]
     numdays = 2
