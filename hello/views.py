@@ -130,7 +130,7 @@ def index(request):
         if(postData["type"]=="getCount"):
             return JsonResponse({"data": 2})
         else:
-            return JsonResponse({"data": 2})
+            return JsonResponse({"data": 3})
 
 def db(request):
     greeting = Greeting()
