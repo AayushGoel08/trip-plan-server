@@ -127,7 +127,10 @@ def index(request):
     if(request.method=='POST'):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
-        return JsonResponse({"data": json.dumps(postData)})
+        if(postData["type"]=="getCount"):
+            return JsonResponse({"data": 2})
+        else:
+            return JsonResponse({"data": 2})
 
 def db(request):
     greeting = Greeting()
