@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from .models import Greeting
 from pulp import *
 import math
+import json
 
 def ilp():
     distances = []
@@ -120,8 +121,12 @@ def ilp():
 # Create your views here.
 def index(request):
     # return HttpResponse('Hello from Python!')
-    string = ilp()
-    return JsonResponse({"data": string})
+    #string = ilp()
+    #return JsonResponse({"data": string})
+    if(request.method=='POST'):
+        jsonData = request.body.decode("utf-8")
+        postData = json.loads(jsonData)
+        return JsonResponse({"data": json.dumps(postData)})
 
 def db(request):
     greeting = Greeting()
