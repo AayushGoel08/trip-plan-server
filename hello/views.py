@@ -130,7 +130,7 @@ def index(request):
         postData = json.loads(jsonData)
         if(postData["type"]=="Count"):
             return JsonResponse({"data": Users.objects.count()})
-        else if(postData["type"]=="Insert"):
+        elif(postData["type"]=="Insert"):
             user = Users(fbid = postData["id"], city = postData["city"])
             user.save()
             return JsonResponse({"data": "Record Inserted"})
