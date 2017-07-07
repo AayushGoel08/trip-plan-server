@@ -4,6 +4,6 @@ from django.db import models
 class Greeting(models.Model):
     when = models.DateTimeField('date created', auto_now_add=True)
 
-#class Users(models.Model):
-    #fbid = models.CharField(max_length=100)
-    #city = models.CharField(max_length=100)
+class Users(models.Model):
+    fbid = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
