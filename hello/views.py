@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.conf import settings
 
 from .models import Greeting
+from .models import Users
+
 from pulp import *
 import math
 import json
@@ -121,16 +123,17 @@ def ilp():
 
 # Create your views here.
 def index(request):
-    # return HttpResponse('Hello from Python!')
     #string = ilp()
     #return JsonResponse({"data": string})
     if(request.method=='POST'):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
-        if(postData["type"]=="getCount"):
-            return JsonResponse({"data": 2})
-        else:
-            return JsonResponse({"data": 3})
+        if(postData["type"]=="Count"):
+            return JsonResponse({"data": Users.objects.count()})
+        else if(postData["type"]=="Insert"):
+            user = Users(fbid = postData["id"], city = postData["city"])
+            user.save()
+            return JsonResponse({"data": "Record Inserted"})
 
 def db(request):
     greeting = Greeting()
