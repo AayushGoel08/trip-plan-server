@@ -20,4 +20,12 @@ class Migration(migrations.Migration):
                 ('when', models.DateTimeField(auto_now_add=True, verbose_name=b'date created')),
             ],
         ),
+        migrations.CreateModel(
+            name='Users',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('fbid', models.CharField(max_length=100)),
+                ('city', models.CharField(max_length=100))
+            ],
+        ),
     ]
