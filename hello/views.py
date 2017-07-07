@@ -129,7 +129,7 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="Count"):
-            return JsonResponse({"data": 2)})
+            return JsonResponse({"data": 2})
         elif(postData["type"]=="Insert"):
             #user = Users(fbid = postData["id"], city = postData["city"])
             #user.save()
