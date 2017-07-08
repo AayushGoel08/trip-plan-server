@@ -9,7 +9,7 @@ from .models import UserTrips
 from pulp import *
 import math
 import json
-import datetime
+from datetime import datetime
 
 def ilp():
     distances = []
