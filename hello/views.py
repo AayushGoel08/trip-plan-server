@@ -136,7 +136,7 @@ def index(request):
         if(postData["type"]=="Count"):
             return JsonResponse({"data": UserTrips.objects.count()})
         elif(postData["type"]=="Insert"):
-            insertRecord(postData)
+            #insertRecord(postData)
             return JsonResponse({"data": postData["start"]})
 
 def db(request):
