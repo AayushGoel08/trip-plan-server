@@ -124,24 +124,24 @@ def ilp():
 
 def insertRecord(postData):
     dispmonth = {
-		"Jan": 1,
-		"Feb": 2,
-		"Mar": 3,
-		"Apr": 4,
-		"May": 5,
-		"Jun": 6,
-		"Jul": 7,
-		"Aug": 8,
-		"Sep": 9,
-		"Oct": 10,
-		"Nov": 11,
-		"Dec": 12
+		"Jan": "1",
+		"Feb": "2",
+		"Mar": "3",
+		"Apr": "4",
+		"May": "5",
+		"Jun": "6",
+		"Jul": "7",
+		"Aug": "8",
+		"Sep": "9",
+		"Oct": "10",
+		"Nov": "11",
+		"Dec": "12"
     }
     startdatetemp = postData["startdate"].split("-")
     enddatetemp = postData["enddate"].split("-")
     starttimetemp = postData["starttime"].split(":")
     endtimetemp = postData["endtime"].split(":")
-    userTrip = UserTrips(postData["fbid"],postData["city"],datetime.date(int(startdatetemp[2]),dispmonth[startdatetemp[1]],int(startdatetemp[0])),datetime.date(int(enddatetemp[2]),dispmonth[enddatetemp[1]],int(enddatetemp[0])),datetime.time(int(starttimetemp[0]),int(starttimetemp[1])),datetime.time(int(endtimetemp[0]),int(endtimetemp[1])),1)
+    userTrip = UserTrips(postData["fbid"],postData["city"],datetime.date(startdatetemp[2],dispmonth[startdatetemp[1]],startdatetemp[0]),datetime.date(enddatetemp[2],dispmonth[enddatetemp[1]],enddatetemp[0]),datetime.time(starttimetemp[0],starttimetemp[1]),datetime.time(endtimetemp[0],endtimetemp[1]),1)
     userTrip.save()
 
 # Create your views here.
