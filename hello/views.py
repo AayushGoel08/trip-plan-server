@@ -142,7 +142,7 @@ def insertRecord(postData):
     starttimetemp = postData["starttime"].split(":")
     endtimetemp = postData["endtime"].split(":")
     userTrip = UserTrips(postData["fbid"],postData["city"],datetime.date(int(startdatetemp[2]),dispmonth[startdatetemp[1]],int(startdatetemp[0])),datetime.date(int(enddatetemp[2]),dispmonth[enddatetemp[1]],int(enddatetemp[0])),datetime.time(int(starttimetemp[0]),int(starttimetemp[1])),datetime.time(int(endtimetemp[0]),int(endtimetemp[1])),1)
-
+    userTrip.save()
 
 # Create your views here.
 def index(request):
