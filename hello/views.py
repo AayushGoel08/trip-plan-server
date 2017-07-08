@@ -9,6 +9,7 @@ from .models import UserTrips
 from pulp import *
 import math
 import json
+import datetime
 
 def ilp():
     distances = []
@@ -121,6 +122,28 @@ def ilp():
     else:
         return "Solution not found"
 
+def insertRecord(postData):
+    dispmonth = {
+		"Jan": 1,
+		"Feb": 2,
+		"Mar": 3,
+		"Apr": 4,
+		"May": 5,
+		"Jun": 6,
+		"Jul": 7,
+		"Aug": 8,
+		"Sep": 9,
+		"Oct": 10,
+		"Nov": 11,
+		"Dec": 12
+    }
+    startdatetemp = postData["startdate"].split("-")
+    enddatetemp = postData["enddate"].split("-")
+    starttimetemp = postData["starttime"].split(":")
+    endtimetemp = postData["endtime"].split(":")
+    userTrip = UserTrips(postData["fbid"],postData["city"],datetime.date(int(startdatetemp[2]),dispmonth[startdatetemp[1]],int(startdatetemp[0])),datetime.date(int(enddatetemp[2]),dispmonth[enddatetemp[1]],int(enddatetemp[0])),datetime.time(int(starttimetemp[0]),int(starttimetemp[1])),datetime.time(int(endtimetemp[0]),int(endtimetemp[1])),1)
+
+
 # Create your views here.
 def index(request):
     #string = ilp()
@@ -130,6 +153,9 @@ def index(request):
         postData = json.loads(jsonData)
         if(postData["type"]=="Count"):
             return JsonResponse({"data": UserTrips.objects.count()})
+        elif(postData["type"]=="Insert"):
+            insertRecord(postData)
+            return JsonResponse({"data": "Record Inserted"})
 
 def db(request):
     trips = UserTrips.objects.all()
