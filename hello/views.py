@@ -123,7 +123,7 @@ def ilp():
         return "Solution not found"
 
 def insertRecord(postData):
-    userTrip = UserTrips(postData["fbid"],postData["city"],str(postData["start"]),str(postData["end"]),1)
+    userTrip = UserTrips(postData["fbid"],postData["city"],postData["start"],postData["end"],1)
     userTrip.save()
 
 # Create your views here.
@@ -136,7 +136,7 @@ def index(request):
         if(postData["type"]=="Count"):
             return JsonResponse({"data": UserTrips.objects.count()})
         elif(postData["type"]=="Insert"):
-            #insertRecord(postData)
+            insertRecord(postData)
             return JsonResponse({"data": str(postData["start"])})
 
 def db(request):
