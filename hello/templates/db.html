@@ -11,12 +11,11 @@
 <ul>
 
 {% for trip in trips %}
+	<li>{{ trip.id }}</li>
     <li>{{ trip.fbid }}</li>
 	<li>{{ trip.city }}</li>
-	<li>{{ trip.startdate }}</li>
-	<li>{{ trip.enddate }}</li>
-	<li>{{ trip.starttime }}</li>
-	<li>{{ trip.endtime }}</li>
+	<li>{{ trip.start }}</li>
+	<li>{{ trip.end }}</li>
 	<li>{{ trip.status }}</li>
 {% endfor %}
 

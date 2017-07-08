@@ -123,7 +123,7 @@ def ilp():
         return "Solution not found"
 
 def insertRecord(postData):
-    userTrip = Trips(postData["fbid"],postData["city"],postData["start"],postData["end"],1,1)
+    userTrip = Trips(,postData["fbid"],postData["city"],postData["start"],postData["end"],1)
     #userTrip = UserTrips(postData["fbid"],postData["city"],"2017-06-30 16:00","2017-06-30 09:00",1)
     userTrip.save()
 
@@ -135,10 +135,13 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="Count"):
-            return JsonResponse({"data": 2})
+            return JsonResponse({"data": Trips.objects.count()})
         elif(postData["type"]=="Insert"):
             insertRecord(postData)
-            return JsonResponse({"data": postData["start"]})
+            return JsonResponse({"data": Trips.objects.count()})
+        elif(postData["type"]=="Delete"):
+            Trips.objects.all().delete()
+            return JsonResponse({"data": Trips.objects.count()})
 
 def db(request):
     trips = Trips.objects.all()
