@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.conf import settings
 
 from .models import Greeting
-from .models import Users
+from .models import UserTrips
 
 from pulp import *
 import math
@@ -129,16 +129,9 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="Count"):
-            return JsonResponse({"data": Users.objects.count()})
-        elif(postData["type"]=="Insert"):
-            user = Users(fbid = postData["id"], city = postData["city"])
-            user.save()
-            return JsonResponse({"data": "Record Inserted"})
+            return JsonResponse({"data": UserTrips.objects.count()})
 
 def db(request):
-    greeting = Greeting()
-    greeting.save()
+    trips = UserTrips.objects.all()
 
-    greetings = Greeting.objects.all()
-
-    return render(request, 'db.html', {'greetings': greetings})
+    return render(request, 'db.html', {'trips': trips})

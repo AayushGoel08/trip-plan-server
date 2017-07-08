@@ -4,6 +4,11 @@ from django.db import models
 class Greeting(models.Model):
     when = models.DateTimeField('date created', auto_now_add=True)
 
-class Users(models.Model):
+class UserTrips(models.Model):
     fbid = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
+    startdate = models.DateField()
+    enddate = models.DateField()
+    starttime = models.TimeField()
+    endtime = models.TimeField()
+    status = models.IntegerField()

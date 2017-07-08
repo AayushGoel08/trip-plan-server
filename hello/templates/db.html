@@ -10,8 +10,14 @@
 
 <ul>
 
-{% for greeting in greetings %}
-    <li>{{ greeting.when }}</li>
+{% for trip in trips %}
+    <li>{{ trip.fbid }}</li>
+	<li>{{ trip.city }}</li>
+	<li>{{ trip.startdate }}</li>
+	<li>{{ trip.enddate }}</li>
+	<li>{{ trip.starttime }}</li>
+	<li>{{ trip.endtime }}</li>
+	<li>{{ trip.status }}</li>
 {% endfor %}
 
 </ul>
