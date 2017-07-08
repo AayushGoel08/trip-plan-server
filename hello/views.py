@@ -123,25 +123,7 @@ def ilp():
         return "Solution not found"
 
 def insertRecord(postData):
-    dispmonth = {
-		"Jan": "01",
-		"Feb": "02",
-		"Mar": "03",
-		"Apr": "04",
-		"May": "05",
-		"Jun": "06",
-		"Jul": "07",
-		"Aug": "08",
-		"Sep": "09",
-		"Oct": "10",
-		"Nov": "11",
-		"Dec": "12"
-    }
-    startdatetemp = postData["startdate"].split("-")
-    enddatetemp = postData["enddate"].split("-")
-    starttimetemp = postData["starttime"].split(":")
-    endtimetemp = postData["endtime"].split(":")
-    userTrip = UserTrips(postData["fbid"],postData["city"],startdatetemp[2]+"-"+dispmonth[startdatetemp[1]]+"-"+startdatetemp[0],enddatetemp[2]+"-"+dispmonth[enddatetemp[1]]+"-"+enddatetemp[0],postData["starttime"],postData["endtime"],1)
+    userTrip = UserTrips(postData["fbid"],postData["city"],postData["startdate"],postData["enddate"],postData["starttime"],postData["endtime"],1)
     userTrip.save()
 
 # Create your views here.
