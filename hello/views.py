@@ -142,7 +142,11 @@ def index(request):
         elif(postData["type"]=="DeleteAll"):
             Trips.objects.all().delete()
             return JsonResponse({"data": Trips.objects.count()})
-
+        elif(postData["type"]=="GetData"):
+            usertrips = Trips.objects.get(fbid = postData["fbid"])
+            userentries = {"records": [entry for entry in usertrips]}
+            return JsonResponse({"data": json.dumps(userentries)})
+        
 def db(request):
     trips = Trips.objects.all()
     return render(request, 'db.html', {'trips': trips})
