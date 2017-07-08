@@ -123,7 +123,8 @@ def ilp():
         return "Solution not found"
 
 def insertRecord(postData):
-    userTrip = UserTrips(postData["fbid"],postData["city"],postData["start"],postData["end"],1)
+    #userTrip = UserTrips(postData["fbid"],postData["city"],postData["start"],postData["end"],1)
+    userTrip = UserTrips(postData["fbid"],postData["city"],"2017-06-30 16:00","2017-06-30 09:00",1)
     userTrip.save()
 
 # Create your views here.
