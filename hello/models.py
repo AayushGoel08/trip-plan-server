@@ -7,8 +7,6 @@ class Greeting(models.Model):
 class UserTrips(models.Model):
     fbid = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    startdate = models.DateField()
-    enddate = models.DateField()
-    starttime = models.TimeField()
-    endtime = models.TimeField()
+    start = models.DateTimeField()
+    end = models.DateTimeField()
     status = models.IntegerField()
