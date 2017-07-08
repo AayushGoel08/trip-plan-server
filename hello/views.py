@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.conf import settings
 
 from .models import Greeting
-#from .models import UserTrips
+from .models import UserTrips
 
 from pulp import *
 import math
@@ -122,10 +122,10 @@ def ilp():
     else:
         return "Solution not found"
 
-#def insertRecord(postData):
-    #userTrip = UserTrips(postData["fbid"],postData["city"],postData["start"],postData["end"],1)
+def insertRecord(postData):
+    userTrip = UserTrips(postData["fbid"],postData["city"],postData["start"],postData["end"],1)
     #userTrip = UserTrips(postData["fbid"],postData["city"],"2017-06-30 16:00","2017-06-30 09:00",1)
-    #userTrip.save()
+    userTrip.save()
 
 # Create your views here.
 def index(request):
@@ -137,10 +137,9 @@ def index(request):
         if(postData["type"]=="Count"):
             return JsonResponse({"data": 2})
         elif(postData["type"]=="Insert"):
-            #insertRecord(postData)
-            return JsonResponse({"data": str(postData["start"])})
+            insertRecord(postData)
+            return JsonResponse({"data": postData["start"]})
 
 def db(request):
-    #trips = UserTrips.objects.all()
-
+    trips = UserTrips.objects.all()
     return render(request, 'db.html', {'trips': trips})
