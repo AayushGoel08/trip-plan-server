@@ -139,7 +139,7 @@ def index(request):
         elif(postData["type"]=="Insert"):
             insertRecord(postData)
             return JsonResponse({"data": Trips.objects.count()})
-        elif(postData["type"]=="Delete"):
+        elif(postData["type"]=="DeleteAll"):
             Trips.objects.all().delete()
             return JsonResponse({"data": Trips.objects.count()})
 
