@@ -166,8 +166,8 @@ def db(request):
             Locations.objects.all().delete()
             return JsonResponse({"data": Locations.objects.count()})
     else:
-        locs = Locations.objects.all()
-        return render(request, 'db.html', {'locations': locs})
+        locations = Locations.objects.all()
+        return render(request, 'db.html', {'locations': locations})
 
 def locationdb(request):
     if(request.method=='POST'):
