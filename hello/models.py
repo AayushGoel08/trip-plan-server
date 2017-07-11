@@ -10,3 +10,14 @@ class Trips(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     status = models.IntegerField()
+
+class Locations(models.Model):
+    city = models.CharField(max_length=100)
+    activity = models.CharField(max_length=100)
+    address = models.CharField(max_length=200)
+    price = models.IntegerField()
+    acttype = models.CharField(max_length=100)
+    hours = models.CharField(max_length=300)
+    time = models.IntegerField()
+    book = models.CharField(max_length=50)
+
