@@ -13,6 +13,7 @@ class Trips(models.Model):
 
 class Locations(models.Model):
     city = models.CharField(max_length=100)
+    locid = models.IntegerField()
     activity = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
     price = models.IntegerField()

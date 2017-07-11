@@ -5,6 +5,8 @@ from django.conf import settings
 
 from .models import Greeting
 from .models import Trips
+from .models import Locations
+
 
 from pulp import *
 import math
@@ -127,6 +129,10 @@ def insertRecord(postData):
     #userTrip = UserTrips(postData["fbid"],postData["city"],"2017-06-30 16:00","2017-06-30 09:00",1)
     userTrip.save()
 
+def insertLocationRecord(postData):
+    loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],int(postData["price"]),postData["acttype"],postData["hours"],int(postData["time"]),postData["book"])
+    loc.save()
+
 # Create your views here.
 def index(request):
     #string = ilp()
@@ -148,5 +154,18 @@ def index(request):
             return JsonResponse({"data": userentries})
         
 def db(request):
-    trips = Trips.objects.all()
-    return render(request, 'db.html', {'trips': trips})
+    locs = Locations.objects.all()
+    return render(request, 'db.html', {'locations': locs})
+
+def locationdb(request):
+    if(request.method=='POST'):
+        jsonData = request.body.decode("utf-8")
+        postData = json.loads(jsonData)
+        if(postData["type"]=="Count"):
+            return JsonResponse({"data": Locations.objects.count()})
+        elif(postData["type"]=="Insert"):
+            insertLocationRecord(postData)
+            return JsonResponse({"data": Locations.objects.count()})
+        elif(postData["type"]=="DeleteAll"):
+            Locations.objects.all().delete()
+            return JsonResponse({"data": Locations.objects.count()})
