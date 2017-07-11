@@ -154,8 +154,20 @@ def index(request):
             return JsonResponse({"data": userentries})
         
 def db(request):
-    locs = Locations.objects.all()
-    return render(request, 'db.html', {'locations': locs})
+    if(request.method=='POST'):
+        jsonData = request.body.decode("utf-8")
+        postData = json.loads(jsonData)
+        if(postData["type"]=="Count"):
+            return JsonResponse({"data": Locations.objects.count()})
+        elif(postData["type"]=="Insert"):
+            insertLocationRecord(postData)
+            return JsonResponse({"data": Locations.objects.count()})
+        elif(postData["type"]=="DeleteAll"):
+            Locations.objects.all().delete()
+            return JsonResponse({"data": Locations.objects.count()})
+    else:
+        locs = Locations.objects.all()
+        return render(request, 'db.html', {'locations': locs})
 
 def locationdb(request):
     if(request.method=='POST'):
