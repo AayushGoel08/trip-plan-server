@@ -184,9 +184,7 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
 
     stayhomes = []
     for i in range(0,numdays-1):
-        stayhomes.append(LpVariable("Stay home"+str(i),0,None))
-						 
-
+        stayhomes.append(LpVariable("Stay home"+str(i),0,None))						 
 
     starttimehomes = []
     endtimehomes = []
@@ -227,6 +225,7 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         for j in range(i+1,len(locs)):
                 if((i-1 in range(0,len(staytimeplaces))) and (j-1 in range(0,len(staytimeplaces)))):
                     prob += timevars[j-1]-timevars[i-1]-staytimeplaces[j-1]+staytimeplaces[i-1]+(M*binvars[num]) <= M - totaltime[i][j], "Prevent sub-tour part C "+str(i)+str(j)
+                    prob += timevars[i-1]-timevars[j-1]+staytimeplaces[j-1]-staytimeplaces[i-1]-(M*binvars[num]) <= 0 - totaltime[i][j], "Prevent sub-tour part D "+str(i)+str(j)
                 prob += timevars[j-1]-timevars[i-1]+(M*binvars[num]) <= M - totaltime[i][j], "Prevent sub-tour part A "+str(i)+str(j)
                 prob += timevars[i-1]-timevars[j-1]-(M*binvars[num]) <= 0 - totaltime[i][j], "Prevent sub-tour part B "+str(i)+str(j)
                 num = num + 1
