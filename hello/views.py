@@ -15,8 +15,8 @@ from ilp import *
 
 def insertTripRecord(postData):
     tripid = Trips.objects.filter(fbid = postData["fbid"],city = postData["fbid"]).count()+1
-    start = datetime.datetime.strptime(postData["start"])
-    end = datetime.datetime.strptime(postData["end"])
+    start = datetime.datetime.strptime(postData["start"], "%Y-%m-%d %H:%M")
+    end = datetime.datetime.strptime(postData["end"], "%Y-%m-%d %H:%M")
     possibles = ""
     for loc in Locations.objects.filter(city = postData["city"]):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
