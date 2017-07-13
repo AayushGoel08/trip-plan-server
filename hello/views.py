@@ -9,6 +9,7 @@ from .models import Locations
 
 
 import json
+import datetime
 from ilp import *
 
 # Create your views here.
@@ -20,8 +21,17 @@ def index(request):
         postData = json.loads(jsonData)
         if(postData["type"]=="ILP"):
             locs = Locations.objects.filter(locid__in = postData["places"], city = "Prague")
-            locsdata = [loc.activity for loc in locs]
-            return JsonResponse({"data": locsdata})
+            start = datetime.datetime(2017,7,17,9,0)
+            end = datetime.datetime(2017,7,18,16,0)
+            sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
+            timeplaces = []
+            staytimeplaces = []
+            numduration = triplimit(start,end)
+            for loc in locs:
+                timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                staytimeplaces.append(loc.time)
+            response = ilp(sleepstart, postdata["home0"], postdata["places"],timeplaces,staytimeplaces, numduration[0], numduration[1])
+            return JsonResponse({"data": reponse[0], "found": response[1]})
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
         elif(postData["type"]=="Insert"):
