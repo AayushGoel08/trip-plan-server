@@ -30,7 +30,7 @@ def index(request):
             for loc in locs:
                 timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(loc.time)
-            response = ilp(sleepstart, postdata["home0"], postdata["places"],timeplaces,staytimeplaces, numduration[0], numduration[1])
+            response = ilp(sleepstart, postData["home0"], postData["places"],timeplaces,staytimeplaces, numduration[0], numduration[1])
             return JsonResponse({"data": reponse[0], "found": response[1]})
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
