@@ -182,7 +182,6 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
 
     objvar = timevars[len(timevars)-1]
 
-    traveltime = []
     stayhomes = []
     for i in range(0,numdays-1):
         stayhomes.append(LpVariable("Stay home"+str(i),0,None))
