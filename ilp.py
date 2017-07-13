@@ -275,14 +275,6 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
     prob.solve()
     if(LpStatus[prob.status]=="Optimal"):
         print("Time = ", value(prob.objective))
-        for i in range(0,len(timevars)):
-                if(i in range(0,len(staytimeplaces))):
-                    #print(value(timevars[i])- staytimeplaces[i],"-",value(timevars[i]))
-                else:
-                    #print(value(timevars[i]))
-
-        #for v in prob.variables():
-        #    print(v.name, "=", v.varValue)
         return [timevars,"Solution Found"]
     else:
         return [[],"Solution not found"]
