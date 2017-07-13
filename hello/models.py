@@ -6,10 +6,13 @@ class Greeting(models.Model):
 
 class Trips(models.Model):
     fbid = models.CharField(max_length=100)
+    tripid = models.IntegerField()
     city = models.CharField(max_length=100)
     start = models.DateTimeField()
     end = models.DateTimeField()
     status = models.IntegerField()
+    possibles = models.CharField(max_length=500, blank=True)
+    actuals = models.CharField(max_length=500, blank=True)
 
 class Locations(models.Model):
     city = models.CharField(max_length=100)
