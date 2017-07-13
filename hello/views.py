@@ -19,7 +19,9 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="ILP"):
-            return JsonResponse({"data": postData["places"]})
+            locs = Locations.objects.filter(locid__in = postData["places"], city = "Prague")
+            locsdata = [loc.activity for activity in locs]
+            return JsonResponse({"data": locsdata})
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
         elif(postData["type"]=="Insert"):
