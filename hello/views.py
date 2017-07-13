@@ -18,13 +18,17 @@ def insertTripRecord(postData):
     start = datetime.datetime.strptime(postData["start"], "%Y-%m-%d %H:%M")
     end = datetime.datetime.strptime(postData["end"], "%Y-%m-%d %H:%M")
     possibles = ""
+    locsdata = []    
     for loc in Locations.objects.filter(city = postData["city"]):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
+            locsdata.append([loc.locid,loc.activity,loc.price,loc.time])
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"")
     userTrip.save()
+    return locsdata
+    
     
 def insertLocationRecord(postData):
     loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],postData["price"],postData["acttype"],postData["hours"],postData["time"],postData["book"])
@@ -74,8 +78,8 @@ def db(request):
             return JsonResponse({"data": Locations.objects.count()})
 
         elif(postData["type"]=="Insert"):
-            insertLocationRecord(postData)
-            return JsonResponse({"data": Locations.objects.count()})
+            locsdata = insertLocationRecord(postData)
+            return JsonResponse({"locsdata": locsdata})
 
         elif(postData["type"]=="DeleteAll"):
             Locations.objects.all().delete()
