@@ -54,7 +54,7 @@ def index(request):
             return JsonResponse({"data": Trips.objects.count()})
 
         elif(postData["type"]=="Insert"):
-            insertRecord(postData)
+            insertTripRecord(postData)
             return JsonResponse({"data": Trips.objects.count()})
 
         elif(postData["type"]=="DeleteAll"):
