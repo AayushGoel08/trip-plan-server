@@ -23,7 +23,7 @@ def insertTripRecord(postData):
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],tripid,postData["city"],postData["start"],postData["end"],1,possibles,"")
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"")
     userTrip.save()
     
 def insertLocationRecord(postData):
