@@ -63,7 +63,7 @@ def index(request):
 
         elif(postData["type"]=="GetData"):
             usertrips = Trips.objects.filter(fbid = postData["fbid"])
-            userentries = {"records": [[entry.city,entry.start,entry.end, entry.possibles] for entry in usertrips]}
+            userentries = {"records": [[entry.city,entry.start,entry.end, entry.possibles, entry.tripid] for entry in usertrips]}
             return JsonResponse({"data": userentries})
         
 def db(request):
