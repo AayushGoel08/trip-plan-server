@@ -26,12 +26,14 @@ def index(request):
             sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
             timeplaces = []
             staytimeplaces = []
+            responses = []
             numduration = triplimit(start,end)
             for loc in locs:
                 timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(loc.time)
+                responses.append(loc.locid+"-"+loc.activity+"-"+loc.time)
             response = ilp(sleepstart, postData["home0"], postData["places"],timeplaces,staytimeplaces, numduration[0], numduration[1])
-            return JsonResponse({"data": response[0], "found": response[1], "times": staytimeplaces})
+            return JsonResponse({"data": response[0], "found": response[1], "data": responses})
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
         elif(postData["type"]=="Insert"):
