@@ -274,8 +274,9 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
     #prob.writeLP("RoutingModel.lp")
     prob.solve()
     if(LpStatus[prob.status]=="Optimal"):
-        print("Time = ", value(prob.objective))
-        return [timevars,"Solution Found"]
+        #print("Time = ", value(prob.objective))
+        times = [value(x) for x in timevars]
+        return [times,"Solution Found"]
     else:
         return [[],"Solution not found"]
 
