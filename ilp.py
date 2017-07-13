@@ -275,7 +275,7 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
     if(LpStatus[prob.status]=="Optimal"):
         #print("Time = ", value(prob.objective))
         times = [value(x) for x in timevars]
-        return [times,"Solution Found"]
+        return [times,"Solution Found",traveltime]
     else:
         return [[],"Solution not found"]
 
