@@ -27,7 +27,7 @@ def insertTripRecord(postData):
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"")
     userTrip.save()
-    return locsdata
+    return [locsdata,tripid]
     
     
 def insertLocationRecord(postData):
@@ -59,7 +59,7 @@ def index(request):
 
         elif(postData["type"]=="Insert"):
             locsdata = insertTripRecord(postData)
-            return JsonResponse({"locsdata": locsdata})
+            return JsonResponse({"locsdata": locsdata[0], "tripid": locsdata[1]})
 
         elif(postData["type"]=="DeleteAll"):
             Trips.objects.all().delete()
