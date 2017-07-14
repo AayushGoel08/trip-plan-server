@@ -24,4 +24,5 @@ class Locations(models.Model):
     hours = models.CharField(max_length=300)
     time = models.IntegerField()
     book = models.CharField(max_length=50)
+    coordinates = models.CharField(max_length=200)
 

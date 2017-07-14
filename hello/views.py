@@ -31,7 +31,7 @@ def insertTripRecord(postData):
     
     
 def insertLocationRecord(postData):
-    loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],postData["price"],postData["acttype"],postData["hours"],postData["time"],postData["book"])
+    loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],postData["price"],postData["acttype"],postData["hours"],postData["time"],postData["book"], postData["coordinates"])
     loc.save()
     
 def index(request):
