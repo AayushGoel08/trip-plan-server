@@ -39,20 +39,25 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="ILP"):
-            locs = Locations.objects.filter(locid__in = postData["places"], city = "Prague")
-            start = datetime.datetime(2017,7,17,9,0)
-            end = datetime.datetime(2017,7,18,16,0)
+            locs = Locations.objects.filter(locid__in = postData["places"], city = postData["city"])
+            userTrip = Trips.objects.get(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
+            start = userTrip.start
+            end = userTrip.end
             sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
             timeplaces = []
             staytimeplaces = []
             locids = []
+            locdata = []
             numduration = triplimit(start,end)
             for loc in locs:
                 timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(loc.time)
                 locids.append(loc.locid)
+                locdata.append({loc.locid: [loc.activity,loc.book,loc.coodinates]})
+            homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
+            locdata.append({"Home": [homeLoc.coodinates]})
             response = ilp(sleepstart, postData["home0"], locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
-            return JsonResponse({"data": response[0], "found": response[1], "ids": locids, "routes": response[2]})
+            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2]})
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
