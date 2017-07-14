@@ -55,9 +55,9 @@ def index(request):
                 timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(loc.time)
                 locids.append(loc.locid)
-                locdata.append({loc.locid: [loc.activity,loc.book,loc.coodinates]})
+                locdata.append({loc.locid: [loc.activity,loc.book,loc.coordinates]})
             homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
-            locdata.append({"Home": [homeLoc.coodinates]})
+            locdata.append({"Home": [homeLoc.coordinates]})
             response = ilp(sleepstart, postData["home0"], locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
             return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2]})
 
