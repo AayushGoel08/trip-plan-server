@@ -18,7 +18,7 @@ def makeroute(numdays,places,times):
         ind = int(coll[i][1]//1440)
         routeString[ind] = routeString[ind]+str(coll[i][0])+"-"
     for i in range(0,len(routeString)):
-        routeString[ind] = routeString[ind]+ "Home"
+        routeString[i] = routeString[i]+ "Home"
     return routeString
         
 def triplimit(start,end):
