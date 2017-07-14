@@ -59,7 +59,7 @@ def index(request):
             homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
             locdata.append({"Home": [homeLoc.coordinates]})
             response = ilp(sleepstart, postData["home0"], locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
-            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2]})
+            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end]})
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
