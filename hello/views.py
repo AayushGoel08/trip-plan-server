@@ -43,6 +43,8 @@ def index(request):
             userTrip = Trips.objects.get(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
             start = userTrip.start
             end = userTrip.end
+            start = start.replace(tzinfo=None)
+            end = end.replace(tzinfo=None)
             sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
             timeplaces = []
             staytimeplaces = []
