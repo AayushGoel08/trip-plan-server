@@ -112,3 +112,6 @@ def db(request):
     else:
         locations = Locations.objects.all()
         return render(request, 'db.html', {'locations': locations})
+
+def bookings(request):
+    return render(request,'bookings.html')
