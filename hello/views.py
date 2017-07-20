@@ -137,8 +137,8 @@ def bookings(request):
         objs = []
         for x in bookings:
             userTrip = Trips.objects.get(tripid = x.tripid, city = x.city, fbid = x.fbid)
-            startdate = userTrip.start.strftime("%d-%B-%Y %H:%M")
-            enddate = userTrip.end.strftime("%d-%B-%Y %H:%M")
+            startdate = userTrip.start.strftime("%d-%b-%Y %H:%M")
+            enddate = userTrip.end.strftime("%d-%b-%Y %H:%M")
             activity = Locations.objects.get(city = x.city, locid = x.locid)
             routeArr = userTrip.actuals.split(";")
             routeTimes = userTrip.actualstime.split(";")
@@ -148,5 +148,5 @@ def bookings(request):
                 if str(x.locid) in routeDay:
                     ind = routeDay.index(str(x.locid))
                     newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[ind]))
-                    objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "activity": activity.activity, "date": newdate.strftime("%d-%B-%Y %H:%M")})
+                    objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "activity": activity.activity, "date": newdate.strftime("%d-%b-%Y %H:%M")})
         return render(request, 'bookings.html', {'bookings': objs})
