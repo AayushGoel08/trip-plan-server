@@ -148,5 +148,5 @@ def bookings(request):
                 if str(x.locid) in routeDay:
                     ind = routeDay.index(str(x.locid))
                     newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[ind]))
-                    objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "activity": activity.activity, "date": newdate.strftime("%d-%b-%Y %H:%M")})
+                    objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locid": x.locid, "activity": activity.activity, "date": newdate.strftime("%d-%b-%Y %H:%M")})
         return render(request, 'bookings.html', {'bookings': objs})

@@ -25,9 +25,13 @@
 	<td>{{ book.activity }}</td>
 	<td>{{ book.date }}</td>
 	<td>
-		<form action="">
-			New Booking date: <input type="text" name="fname"><br>
-			<input type="submit" value="Submit">
+		<form action="/bookings" method="post">
+			<input type="hidden" name="fbid" value="{{ book.fbid }}">
+			<input type="hidden" name="city" value="{{ book.city }}">
+			<input type="hidden" name="tripid" value="{{ book.tripid }}">
+			<input type="hidden" name="locid" value="{{ book.locid }}">
+			<input type="text" name="newdate">
+			<input type="submit" value="Book">
 		</form>
 	</td>
   </tr>
