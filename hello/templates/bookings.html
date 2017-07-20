@@ -6,7 +6,18 @@
 
 
 <h2>Bookings</h2>
+<ul>
+{% i = 0 %}
+{% for book in bookings %}
+    <li>{{ book.fbid }}</li>
+	<li>{{ book.tripid }}</li>
+	<li>{{ book.city  }}</li>
+	<li>{{ book.locid }}</li>
+	<li>{{ dates.at(i) }}</li>
+	{% i = i+1 %}
+{% endfor %}
 
+</ul>
 
 </div>
 
