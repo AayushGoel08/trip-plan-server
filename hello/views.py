@@ -119,10 +119,8 @@ def db(request):
 
 def bookings(request):
     if(request.method=='POST'):
-        try:
-            j = request.POST.get("fbid", "")
-            return JsonResponse({"data": j})
-        except:    
+        
+        try:    
             jsonData = request.body.decode("utf-8")
             postData = json.loads(jsonData)
             if(postData["type"]=="Count"):
@@ -135,6 +133,9 @@ def bookings(request):
             elif(postData["type"]=="DeleteAll"):
                 Bookings.objects.all().delete()
                 return JsonResponse({"data": Locations.objects.count()})
+        except:
+            j = request.POST.get("fbid", "")
+            return JsonResponse({"data": "This is the HTTP thing"})
            
     else:
         bookings = Bookings.objects.all()
