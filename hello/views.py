@@ -119,18 +119,22 @@ def db(request):
 
 def bookings(request):
     if(request.method=='POST'):
-        jsonData = request.body.decode("utf-8")
-        postData = json.loads(jsonData)
-        if(postData["type"]=="Count"):
-            return JsonResponse({"data": Bookings.objects.count()})
+        try:
+            j = request.POST.get("fbid", "")
+            return JsonResponse({"data": j})
+        except:    
+            jsonData = request.body.decode("utf-8")
+            postData = json.loads(jsonData)
+            if(postData["type"]=="Count"):
+                return JsonResponse({"data": Bookings.objects.count()})
 
-        elif(postData["type"]=="Insert"):
-            insertBookingRecord(postData)
-            return JsonResponse({"data": Bookings.objects.count()})
+            elif(postData["type"]=="Insert"):
+                insertBookingRecord(postData)
+                return JsonResponse({"data": Bookings.objects.count()})
 
-        elif(postData["type"]=="DeleteAll"):
-            Bookings.objects.all().delete()
-            return JsonResponse({"data": Locations.objects.count()})
+            elif(postData["type"]=="DeleteAll"):
+                Bookings.objects.all().delete()
+                return JsonResponse({"data": Locations.objects.count()})
            
     else:
         bookings = Bookings.objects.all()
