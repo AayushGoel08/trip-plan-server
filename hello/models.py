@@ -33,5 +33,4 @@ class Bookings(models.Model):
     city = models.CharField(max_length=100)
     locid = models.IntegerField()
     booked = models.IntegerField()
-    booktime = models.DateTimeField()
 

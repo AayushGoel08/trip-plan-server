@@ -33,6 +33,10 @@ def insertTripRecord(postData):
 def insertLocationRecord(postData):
     loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],postData["price"],postData["acttype"],postData["hours"],postData["time"],postData["book"], postData["coordinates"])
     loc.save()
+
+def insertBookingRecord(postData):
+    booking = Bookings(None,postData["fbid"],postData["tripid"],postData["city"],postData["locid"],0)
+    booking.save()
     
 def index(request):
     if(request.method=='POST'):
@@ -114,4 +118,19 @@ def db(request):
         return render(request, 'db.html', {'locations': locations})
 
 def bookings(request):
-    return render(request,'bookings.html')
+    if(request.method=='POST'):
+        jsonData = request.body.decode("utf-8")
+        postData = json.loads(jsonData)
+        if(postData["type"]=="Count"):
+            return JsonResponse({"data": Bookings.objects.count()})
+
+        elif(postData["type"]=="Insert"):
+            insertBookingRecord(postData)
+            return JsonResponse({"data": Bookings.objects.count()})
+
+        elif(postData["type"]=="DeleteAll"):
+            Bookings.objects.all().delete()
+            return JsonResponse({"data": Locations.objects.count()})
+    else:
+        bookings = Bookings.objects.all()
+        return render(request, 'bookings.html', {'bookings': bookings})
