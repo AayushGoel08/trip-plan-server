@@ -6,28 +6,30 @@
 
 
 <h2>Bookings</h2>
-<div>
-	<strong>FB ID</strong>
-	<strong>City</strong>
-	<strong>Start date</strong>
-	<strong>End date</strong>
-	<strong>Activity</strong>
-	<strong>Current booking </strong>
-	<strong>New booking</strong>
-
-{% for book in bookings %}
-    <div>
-		<p>{{ book.fbid }}</p>
-		<p>{{ book.city  }}</p>
-		<p>{{ book.start }}</p>
-		<p>{{ book.end }}</p>
-		<p>{{ book.activity }}</p>
-		<p>{{ book.date }}</p>
-	</div>
-{% endfor %}
-
-</ul>
-
+<table style="width:100%">
+  <tr>
+    <th>FB ID</th>
+    <th>City</th> 
+    <th>Start date</th>
+	<th>End date</th>
+	<th>Activity</th>
+	<th>Current booking</th>
+	<th>New booking</th>
+	<th>Book button</th>
+  </tr>
+  {% for book in bookings %}
+  <tr>
+    <td>{{ book.fbid }}</td>
+	<td>{{ book.city  }}</td>
+	<td>{{ book.start }}</td>
+	<td>{{ book.end }}</td>
+	<td>{{ book.activity }}</td>
+	<td>{{ book.date }}</td>
+  </tr>
+  {% endfor %}
+  
+</table>
+	
 </div>
 
 {% endblock %}
