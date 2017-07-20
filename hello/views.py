@@ -6,7 +6,7 @@ from django.conf import settings
 from .models import Greeting
 from .models import Trips
 from .models import Locations
-
+from .models import Bookings
 
 import json
 import datetime
