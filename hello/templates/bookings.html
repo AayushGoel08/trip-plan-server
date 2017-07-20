@@ -9,8 +9,9 @@
 <ul>
 {% for book in bookings %}
     <li>{{ book.fbid }}</li>
-	<li>{{ book.tripid }}</li>
 	<li>{{ book.city  }}</li>
+	<li>{{ book.start }}</li>
+	<li>{{ book.end }}</li>
 	<li>{{ book.activity }}</li>
 	<li>{{ book.date }}</li>
 {% endfor %}
