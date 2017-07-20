@@ -131,6 +131,14 @@ def bookings(request):
         elif(postData["type"]=="DeleteAll"):
             Bookings.objects.all().delete()
             return JsonResponse({"data": Locations.objects.count()})
+
+        elif(postData["type"]=="GetDate"):
+            userTrip = Trips.objects.get(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
+            routeArr = userTrip.actuals.split("-")
+            userBookings = Trips.objects.filter(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
+            dat = type(userTrip.start).__name__
+            return JsonResponse({"data": dat})
+                
     else:
         bookings = Bookings.objects.all()
         return render(request, 'bookings.html', {'bookings': bookings})
