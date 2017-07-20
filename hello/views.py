@@ -25,7 +25,7 @@ def insertTripRecord(postData):
             possibles = possibles+str(loc.locid)+","
             locsdata.append([loc.locid,loc.activity,loc.price,loc.time])
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"")
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"","")
     userTrip.save()
     return [locsdata,tripid]
     
@@ -59,6 +59,16 @@ def index(request):
             homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
             locdata["Home"] = [homeLoc.coordinates]
             response = ilp(sleepstart, postData["home0"], locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
+            routeSaveString = ""
+            routeSaveTimes = ""
+            for i in range(0,len(response[2])-1):
+                routeSaveString = routeSaveString + response[2][i]+";"
+                routeSaveTimes = routeSaveTimes + response[3][i]+";"
+            routeSaveString = routeSaveString + response[2][len(response[2])-1]
+            routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
+            userTrip.actuals = routeSaveString
+            userTrip.actualstime = routeSaveTimes
+            userTrip.save()
             return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end]})
 
         elif(postData["type"]=="Count"):
@@ -79,7 +89,7 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.tripid] for entry in usertrips]}
+            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.actuals, entry.actualstime] for entry in usertrips]}
             return JsonResponse({"data": userentries})
     else:
         trips = Trips.objects.all()

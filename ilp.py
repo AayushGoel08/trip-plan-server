@@ -6,20 +6,24 @@ import calendar
 from operator import itemgetter
 
 
-def makeroute(numdays,places,times):
+def makeroute(numdays,places,times,staytimeplaces):
     routeString = []
+    routeTimes = []
     coll = []
     for i in range(0,numdays):
         routeString.append("Home-")
+        routeTimes.append("Home-")
     for i in range(0, len(places)):
-        coll.append((places[i], times[i]))
+        coll.append((places[i], times[i], staytimeplaces[i]))
     coll = sorted(coll,key=itemgetter(1))
     for i in range(0, len(coll)):
         ind = int(coll[i][1]//1440)
         routeString[ind] = routeString[ind]+str(coll[i][0])+"-"
+        routeTimes[ind] = routeTimes[ind]+str(coll[i][1]-coll[i][2])+"-"
     for i in range(0,len(routeString)):
         routeString[i] = routeString[i]+ "Home"
-    return routeString
+        routeTimes[i] = routeTimes[i]+ "Home"
+    return [routeString,routeTimes]
         
 def triplimit(start,end):
     durationmin = int((end - start).total_seconds()/60)
@@ -291,8 +295,8 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
     if(LpStatus[prob.status]=="Optimal"):
         #print("Time = ", value(prob.objective))
         times = [value(x) for x in timevars]
-        routeString = makeroute(numdays, places,times)
-        return [times,"Solution Found", routeString]
+        routeString = makeroute(numdays, places,times,staytimeplaces)
+        return [times,"Solution Found", routeString[0],routeString[1]]
     else:
         return [[],"Solution not found"]
 
