@@ -93,7 +93,7 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.actuals, entry.actualstime] for entry in usertrips]}
+            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.actuals, entry.actualstime, entry.tripid] for entry in usertrips]}
             return JsonResponse({"data": userentries})
     else:
         trips = Trips.objects.all()
