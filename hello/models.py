@@ -13,6 +13,7 @@ class Trips(models.Model):
     status = models.IntegerField()
     possibles = models.CharField(max_length=500, blank=True)
     actuals = models.CharField(max_length=500, blank=True)
+    actualstime = models.CharField(max_length=500, blank=True)
 
 class Locations(models.Model):
     city = models.CharField(max_length=100)
@@ -25,4 +26,12 @@ class Locations(models.Model):
     time = models.IntegerField()
     book = models.CharField(max_length=50)
     coordinates = models.CharField(max_length=200)
+
+class Bookings(models.Model):
+    fbid = models.CharField(max_length=100)
+    tripid = models.IntegerField()
+    city = models.CharField(max_length=100)
+    locid = models.IntegerField()
+    booked = models.IntegerField()
+    booktime = models.DateTimeField()
 

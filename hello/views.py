@@ -81,7 +81,10 @@ def index(request):
             usertrips = Trips.objects.all()
             userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.tripid] for entry in usertrips]}
             return JsonResponse({"data": userentries})
-        
+    else:
+        trips = Trips.objects.all()
+        return render(request, 'index.html', {'trips': trips})
+    
 def db(request):
     if(request.method=='POST'):
         jsonData = request.body.decode("utf-8")
