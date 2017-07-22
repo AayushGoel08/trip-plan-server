@@ -216,7 +216,7 @@ def bookings(request):
             routeArr = userTrip.actuals.split(";")
             routeTimes = userTrip.actualstime.split(";")
             for obj in objs:
-                if(obj.fbid==fbod and obj.city==city and obj.tripid==tripid):
+                if(obj.fbid==userTrip.fbid and obj.city==userTrip.city and obj.tripid==userTrip.tripid):
                     ind = objs.index(obj)
             if(ind==-1):
                 objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames": [],"bookcount": 0})
