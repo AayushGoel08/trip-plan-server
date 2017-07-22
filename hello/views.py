@@ -219,7 +219,7 @@ def bookings(request):
                 if(obj.fbid==userTrip.fbid and obj.city==userTrip.city and obj.tripid==userTrip.tripid):
                     ind = objs.index(obj)
             if(ind==-1):
-                objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames": [],"bookcount": 0})
+                objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames": [], "bookcount": 0})
                 ind = num
                 num = num + 1
             
@@ -227,7 +227,7 @@ def bookings(request):
                 routeDay = routeArr[i].split("-")
                 routeDayTimes = routeTimes[i].split("-")
                 if str(x.locid) in routeDay:
-                    objs[ind].bookcount = objs[ind].bookcount + 1
+                    objs[ind]["bookcount"] = objs[ind]["bookcount"] + 1
                     locindex = routeDay.index(str(x.locid))
                     newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[locindex]))
                     objs[ind].locidarr.append(x.locid)
