@@ -31,6 +31,12 @@ def triplimit(start,end):
 
     return [durationmin,durationdays]
 
+def dateconversionsimple(start,time):
+    timeact = datetime.datetime.strptime(time,"%d-%b-%Y %H:%M")
+    duration = int((timeact - start).total_seconds()/60)
+
+    return [duration]
+
 def dateconversion(start, end, acttype,hours):
     
     durationmin = int((end - start).total_seconds()/60)

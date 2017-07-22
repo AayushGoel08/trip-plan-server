@@ -12,7 +12,7 @@
     <th>City</th> 
     <th>Start date</th>
 	<th>End date</th>
-	<th>Activity</th>
+	<th>Activities</th>
 	<th>Current booking</th>
 	<th>Booking Zone</th>
   </tr>
@@ -22,15 +22,26 @@
 	<td>{{ book.city  }}</td>
 	<td>{{ book.start }}</td>
 	<td>{{ book.end }}</td>
-	<td>{{ book.activity }}</td>
-	<td>{{ book.date }}</td>
+	<td>
+		{% for act in book.activityarr %}
+		{{ act }}<br/>
+		{% endfor %}
+	</td>
+	<td>
+		{% for date in book.datearr %}
+		{{ date }}<br/>
+		{% endfor %}
+	</td>
 	<td>
 		<form action="/bookings" method="post">
 			<input type="hidden" name="fbid" value="{{ book.fbid }}">
 			<input type="hidden" name="city" value="{{ book.city }}">
 			<input type="hidden" name="tripid" value="{{ book.tripid }}">
-			<input type="hidden" name="locid" value="{{ book.locid }}">
-			<input type="text" name="newdate">
+			<input type="hidden" name="locids" value="{{ book.locidstr }}">
+			<input type="hidden" name="count" value="{{ book.bookcount}}">
+			{% for datename in book.newdatenames %}
+			<input type="text" name="{{ datename }}"><br/>
+			{% endfor %}
 			<input type="submit" value="Book">
 		</form>
 	</td>

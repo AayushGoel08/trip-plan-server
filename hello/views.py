@@ -133,25 +133,108 @@ def bookings(request):
             elif(postData["type"]=="DeleteAll"):
                 Bookings.objects.all().delete()
                 return JsonResponse({"data": Locations.objects.count()})
+
+            elif(postData["type"]=="GetAllData"):
+                userbooks = Bookings.objects.all()
+                userentries = {"records": [[entry.fbid, entry.city,entry.tripid,entry.locid, entry.booked] for entry in userbooks]}
+                return JsonResponse({"data": userentries})
         except:
-            j = request.POST.get("fbid", "")
-            return JsonResponse({"data": "This is the HTTP thing"})
+            bookfbid = request.POST.get("fbid", "")
+            booktripid = int(request.POST.get("tripid",""))
+            bookcity =  request.POST.get("city","")
+            booklocids = request.POST.get("locids","").split("-")
+            for i in range(0,len(booklocids)):
+                booklocids[i] = int(booklocids[i])
+            newdates = []
+            for i in range(0,int(request.POST.get("count",""))):
+                newdates.append(datetime.datetime.strptime(request.POST.get("newdate"+str(i+1),""),"%d-%b-%Y %H:%M"))
+            userTrip = Trips.objects.get(tripid = booktripid, city = bookcity, fbid = bookfbid)
+            places = []
+            timebooked = []
+            oldroutes = userTrip.actuals.split(";")
+            for route in oldroutes:
+                routenums = route.split("-")
+                for x in routenums:
+                    if(x!="Home"):
+                        places.append(int(x))
+
+            timebooked = []
+            for i in range(0,len(places)):
+                timebooked.append("N/A")
+
+            for i in range(0,len(booklocids)):
+                ind = places.index(booklocids[i])
+                timebooked[ind] = newdates[i]
+                
+            locs = Locations.objects.filter(locid__in = places, city = bookcity)
+            start = userTrip.start
+            end = userTrip.end
+            start = start.replace(tzinfo=None)
+            end = end.replace(tzinfo=None)
+            sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
+            timeplaces = []
+            staytimeplaces = []
+            locids = []
+            locdata = {}
+            numduration = triplimit(start,end)
+            for loc in locs:
+                if(timebooked[places.index(loc.locid)]=="N/A"):
+                    timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                else:
+                    timeplaces.append([dateconversionsimple(start,timebooked[places.index(loc.locid)])])
+                staytimeplaces.append(loc.time)
+                locids.append(loc.locid)
+                locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
+            #To change home0 and homeLoc when adding homes facility
+            home0 = 9
+            homeLoc = Locations.objects.get(locid = home0, city = bookcity)
+            locdata["Home"] = [homeLoc.coordinates]
+            #To change home0 and homeLoc when adding homes facility 
+            response = ilp(sleepstart, home0, locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
+            routeSaveString = ""
+            routeSaveTimes = ""
+            for i in range(0,len(response[2])-1):
+                routeSaveString = routeSaveString + response[2][i]+";"
+                routeSaveTimes = routeSaveTimes + response[3][i]+";"
+            routeSaveString = routeSaveString + response[2][len(response[2])-1]
+            routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
+            userTrip.actuals = routeSaveString
+            userTrip.actualstime = routeSaveTimes
+            userTrip.save()
+            return JsonResponse({"data": "New trip booked"})
            
     else:
         bookings = Bookings.objects.all()
         objs = []
+        num = 0
         for x in bookings:
+            ind = -1
             userTrip = Trips.objects.get(tripid = x.tripid, city = x.city, fbid = x.fbid)
             startdate = userTrip.start.strftime("%d-%b-%Y %H:%M")
             enddate = userTrip.end.strftime("%d-%b-%Y %H:%M")
             activity = Locations.objects.get(city = x.city, locid = x.locid)
             routeArr = userTrip.actuals.split(";")
             routeTimes = userTrip.actualstime.split(";")
+            for obj in objs:
+                if(obj.fbid==fbod and obj.city==city and obj.tripid==tripid):
+                    ind = objs.index(obj)
+            if(ind==-1):
+                objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames":[],"bookcount":0})
+                ind = num
+                num = num + 1
+            
             for i in range(0,len(routeArr)):
                 routeDay = routeArr[i].split("-")
                 routeDayTimes = routeTimes[i].split("-")
                 if str(x.locid) in routeDay:
-                    ind = routeDay.index(str(x.locid))
-                    newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[ind]))
-                    objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locid": x.locid, "activity": activity.activity, "date": newdate.strftime("%d-%b-%Y %H:%M")})
-        return render(request, 'bookings.html', {'bookings': objs})
+                    objs[ind].bookcount = objs[ind].bookcount + 1
+                    locindex = routeDay.index(str(x.locid))
+                    newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[locindex]))
+                    objs[ind].locidarr.append(x.locid)
+                    objs[ind].activityarr.append(activity.activity)
+                    objs[ind].datearr.append(newdate.strftime("%d-%b-%Y %H:%M"))
+                    objs[ind].newdatenames.append("newdate"+str(bookcount))
+
+        for obj in objs:
+            #Put all .join statements here
+            return render(request, 'bookings.html', {'bookings': objs})
