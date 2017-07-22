@@ -147,7 +147,7 @@ def bookings(request):
                 booklocids[i] = int(booklocids[i])
             newdates = []
             for i in range(0,int(request.POST.get("count",""))):
-                newdates.append(datetime.datetime.strptime(request.POST.get("newdate"+str(i+1),""),"%d-%b-%Y %H:%M"))
+                newdates.append(request.POST.get("newdate"+str(i+1),""))
             userTrip = Trips.objects.get(tripid = booktripid, city = bookcity, fbid = bookfbid)
             places = []
             timebooked = []
