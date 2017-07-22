@@ -219,7 +219,7 @@ def bookings(request):
                 if(obj.fbid==fbod and obj.city==city and obj.tripid==tripid):
                     ind = objs.index(obj)
             if(ind==-1):
-                objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames":[],"bookcount":0})
+                objs.append({"start": startdate, "end": enddate, "fbid": userTrip.fbid, "city": userTrip.city, "tripid": userTrip.tripid, "locidarr": [], "locidstr": "", "activityarr": [], "datearr": [], "newdatenames": [],"bookcount": 0})
                 ind = num
                 num = num + 1
             
