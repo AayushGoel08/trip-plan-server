@@ -230,11 +230,11 @@ def bookings(request):
                     objs[ind]["bookcount"] = objs[ind]["bookcount"] + 1
                     locindex = routeDay.index(str(x.locid))
                     newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[locindex]))
-                    objs[ind].locidarr.append(x.locid)
-                    objs[ind].activityarr.append(activity.activity)
-                    objs[ind].datearr.append(newdate.strftime("%d-%b-%Y %H:%M"))
-                    objs[ind].newdatenames.append("newdate"+str(bookcount))
+                    objs[ind]["locidarr"].append(x.locid)
+                    objs[ind]["activityarr"].append(activity.activity)
+                    objs[ind]["datearr"].append(newdate.strftime("%d-%b-%Y %H:%M"))
+                    objs[ind]["newdatenames"].append("newdate"+str(bookcount))
 
         for obj in objs:
-            #Put all .join statements here
+            obj["locidstr"] = '-'.join(obj["locidarr"])
             return render(request, 'bookings.html', {'bookings': objs})
