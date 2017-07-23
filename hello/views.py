@@ -12,6 +12,16 @@ import json
 import datetime
 from ilp import *
 
+def getPlaces(routeArr):
+    places = []
+    for x in routeArr:
+        routes = x.split("-")
+        for loc in x:
+            if(loc!="Home"):
+                if(int(loc) not in places):
+                    places.append(int(loc))
+    return places
+    
 
 def insertTripRecord(postData):
     tripid = Trips.objects.filter(fbid = postData["fbid"],city = postData["city"]).count()+1
@@ -72,6 +82,7 @@ def index(request):
             routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
             userTrip.actuals = routeSaveString
             userTrip.actualstime = routeSaveTimes
+            userTrip.status = 2
             userTrip.save()
             return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end]})
 
@@ -93,8 +104,30 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.possibles, entry.actuals, entry.actualstime, entry.tripid] for entry in usertrips]}
+            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid] for entry in usertrips]}
             return JsonResponse({"data": userentries})
+
+        elif(postData["type"]=="GetTripData"):
+            userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+            if(userTrip.status==1):
+                return JsonResponse({"status": 1})
+            else:
+                start = userTrip.start
+                end = userTrip.end
+                start = start.replace(tzinfo=None)
+                end = end.replace(tzinfo=None)
+                routeArr =  userTrip.actuals.split(";")
+                places = getPlaces(routeArr)
+                
+                locs = Locations.objects.filter(locid__in = postData["places"], city = postData["city"])
+                locids = []
+                locdata = {}
+                for loc in locs:
+                    locids.append(loc.locid)
+                    locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
+                homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
+                locdata["Home"] = [homeLoc.coordinates]
+                return JsonResponse({"status": 2, "locsdata": locdata, "routes": routeArr, "dates": [start, end]})
     else:
         trips = Trips.objects.all()
         return render(request, 'index.html', {'trips': trips})
