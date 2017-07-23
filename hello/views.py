@@ -10,6 +10,7 @@ from .models import Bookings
 
 import json
 import datetime
+import requests
 from ilp import *
 
 def getPlaces(routeArr):
@@ -21,7 +22,18 @@ def getPlaces(routeArr):
                 places.append(int(x))
     return places
     
+def gethomedata(postData):
+    key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+    url = url + postData["loctext"] + " "+ postData["city"] + "&key=" +key
 
+    data = requests.get(url).json()
+    lat = data['results'][0]['geometry']['location']['lat']
+    lng = data['results'][0]['geometry']['location']['lng']
+    s = data['results'][0]['formatted_address'].split(", ",1)
+    return [s[0],s[1],lat,lng]
+
+    
 def insertTripRecord(postData):
     tripid = Trips.objects.filter(fbid = postData["fbid"],city = postData["city"]).count()+1
     start = datetime.datetime.strptime(postData["start"], "%Y-%m-%d %H:%M")
@@ -105,6 +117,9 @@ def index(request):
             usertrips = Trips.objects.all()
             userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid] for entry in usertrips]}
             return JsonResponse({"data": userentries})
+
+        elif(postData["type"]=="GetHomeData"):
+            
 
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
