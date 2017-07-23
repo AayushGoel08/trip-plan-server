@@ -109,7 +109,13 @@ def index(request):
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             if(userTrip.status==1):
-                return JsonResponse({"status": 1})
+                locdata = []
+                possibles = userTrip.possibles.split(",")
+                for i in range(0,len(possibles)):
+                    possibles[i] = int(possibles[i])
+                for loc in Locations.objects.filter(locid__in = possibles, city = postData["city"]):
+                        locdata.append([loc.locid,loc.activity,loc.price,loc.time])
+                return JsonResponse({"status": 1, "locsdata": locdata})
             else:
                 start = userTrip.start
                 end = userTrip.end
