@@ -118,7 +118,7 @@ def index(request):
                 routeArr =  userTrip.actuals.split(";")
                 places = getPlaces(routeArr)
                 
-                locs = Locations.objects.filter(locid__in = postData["places"], city = postData["city"])
+                locs = Locations.objects.filter(locid__in = places, city = postData["city"])
                 locids = []
                 locdata = {}
                 for loc in locs:
