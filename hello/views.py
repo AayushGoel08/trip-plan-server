@@ -14,12 +14,11 @@ from ilp import *
 
 def getPlaces(routeArr):
     places = []
-    for x in routeArr:
-        routes = x.split("-")
-        for loc in x:
-            if(loc!="H"):
-                if(int(loc) not in places):
-                    places.append(int(loc))
+    for route in routeArr:
+        routenums = route.split("-")
+        for x in routenums:
+            if(x!="Home"):
+                places.append(int(x))
     return places
     
 
