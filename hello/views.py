@@ -17,7 +17,7 @@ def getPlaces(routeArr):
     for x in routeArr:
         routes = x.split("-")
         for loc in x:
-            if(loc!="Home"):
+            if(loc!="H"):
                 if(int(loc) not in places):
                     places.append(int(loc))
     return places
