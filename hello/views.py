@@ -33,8 +33,8 @@ def gethomedata(postData):
     temp = data['results'][0]['formatted_address'].split(", ")
     n = len(temp)-2
     s = []
-    s.push(', '.join(temp[:n]))
-    s.push(', '.join(temp[n:]))
+    s.append(', '.join(temp[:n]))
+    s.append(', '.join(temp[n:]))
     return [s[0],s[1],lat,lng]
 
     
