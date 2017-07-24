@@ -119,7 +119,7 @@ def index(request):
             return JsonResponse({"data": userentries})
 
         elif(postData["type"]=="GetHomeData"):
-            
+            return JsonResponse({"data": gethomedata(postData)})
 
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
