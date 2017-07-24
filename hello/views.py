@@ -30,8 +30,11 @@ def gethomedata(postData):
     data = requests.get(url).json()
     lat = data['results'][0]['geometry']['location']['lat']
     lng = data['results'][0]['geometry']['location']['lng']
-    temp = len(data['results'][0]['formatted_address'].split(", "))
-    s = data['results'][0]['formatted_address'].split(", ",temp-2)
+    temp = data['results'][0]['formatted_address'].split(", ")
+    n = len(temp)-2
+    s = []
+    s.push(', '.join(temp[:n]))
+    s.push(', '.join(temp[n:]))
     return [s[0],s[1],lat,lng]
 
     
