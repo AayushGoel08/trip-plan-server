@@ -27,6 +27,22 @@ def gethomename(postData):
     temp = data.text.split('<th class="hotel_name" colspan="2">')[1].split('<span class="nowrap pb-conf-rating">')[0].strip()
     return temp
 
+def sendhomename(postData):
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+    userTrip.homename = postData["name"]
+
+    key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+    url = url + postData["name"] +"&key=" +key
+
+    data = requests.get(url).json()
+    lat = data['results'][0]['geometry']['location']['lat']
+    lng = data['results'][0]['geometry']['location']['lng']
+    userTrip.status = 1
+    userTrip.homecoordinates = str(lat)+ " - " + str(lng)
+    userTrip.save()
+    return "Home location booked and saved"
+
 def gethomedata(postData):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     url = "https://maps.googleapis.com/maps/api/geocode/json?address="
@@ -132,6 +148,9 @@ def index(request):
 
         elif(postData["type"]=="GetHomeName"):
             return JsonResponse({"data": gethomename(postData)})
+
+        elif(postData["type"]=="SendHomeName"):
+            return JsonResponse({"data": sendhomename(postData)})
 
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
