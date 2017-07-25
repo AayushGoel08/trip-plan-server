@@ -14,6 +14,10 @@ class Trips(models.Model):
     possibles = models.CharField(max_length=500, blank=True)
     actuals = models.CharField(max_length=500, blank=True)
     actualstime = models.CharField(max_length=500, blank=True)
+    homename = models.CharField(max_length=200,blank=True)
+    homecoordinates = models.CharField(max_length=200,blank=True)
+    homedistances = models.CharField(max_length=500,blank=True)
+    
 
 class Locations(models.Model):
     city = models.CharField(max_length=100)

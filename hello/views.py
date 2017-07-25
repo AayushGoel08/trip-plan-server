@@ -55,7 +55,7 @@ def insertTripRecord(postData):
             possibles = possibles+str(loc.locid)+","
             locsdata.append([loc.locid,loc.activity,loc.price,loc.time])
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],1,possibles,"","")
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","")
     userTrip.save()
     return [locsdata,tripid]
     
