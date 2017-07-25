@@ -22,6 +22,31 @@ def getPlaces(routeArr):
                 places.append(int(x))
     return places
 
+def gethomedistances(userTrip, lat, lng):
+    distances = []
+    locs = Locations.objects.filter(city = userTrip.city)
+    key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+    for i in range(0,len(locs)):
+        coordinates = locs[i].split(" - ")
+        latdest = coordinates[0]
+        lngdest = coordinates[1]
+
+        
+        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+str(lat)+","+str(lng)+"&destinations="+latdest+","+lngdest+"&mode=walking&key="+key
+        data = requests.get(string).json()
+        time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
+        timenum = 0
+        #Below code assumes x hours y minutes data format
+        if(len(time)==2):
+            timenum = int(time[0])
+        else:
+            timenum = (int(time[0])*60) + (int(time[2]))
+        distances.append(str(locs[i].locid)+"-"+str(timenum))
+
+    distancestring = ";".join(distances)
+    userTrip.homedistances = distancestring
+    userTrip.save()
+    
 def gethomename(postData):
     data = requests.get(postData["url"])
     temp = data.text.split('<th class="hotel_name" colspan="2">')[1].split('<span class="nowrap pb-conf-rating">')[0].strip()
@@ -41,6 +66,7 @@ def sendhomename(postData):
     userTrip.status = 1
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
     userTrip.save()
+    getHomeDistances(userTrip, lat, lng)
     return "Home location booked and saved"
 
 def savehomename(postData):
@@ -49,6 +75,7 @@ def savehomename(postData):
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
     userTrip.status = 1
     userTrip.save()
+    getHomeDistances(userTrip, postData["lat"], postData["lng"])
     return "Home location saved"
 
 def gethomedata(postData):
