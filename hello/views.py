@@ -66,7 +66,7 @@ def sendhomename(postData):
     userTrip.status = 1
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
     userTrip.save()
-    getHomeDistances(userTrip, lat, lng)
+    gethomedistances(userTrip, lat, lng)
     return "Home location booked and saved"
 
 def savehomename(postData):
@@ -75,7 +75,7 @@ def savehomename(postData):
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
     userTrip.status = 1
     userTrip.save()
-    getHomeDistances(userTrip, postData["lat"], postData["lng"])
+    gethomedistances(userTrip, postData["lat"], postData["lng"])
     return "Home location saved"
 
 def gethomedata(postData):
