@@ -27,7 +27,7 @@ def gethomedistances(userTrip, lat, lng):
     locs = Locations.objects.filter(city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     for i in range(0,len(locs)):
-        coordinates = locs[i].split(" - ")
+        coordinates = locs[i].coordinates.split(" - ")
         latdest = coordinates[0]
         lngdest = coordinates[1]
 
