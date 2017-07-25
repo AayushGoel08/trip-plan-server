@@ -21,7 +21,12 @@ def getPlaces(routeArr):
             if(x!="Home"):
                 places.append(int(x))
     return places
-    
+
+def gethomename(postData):
+    data = requests.get(postData["url"])
+    temp = data.text.split('<th class="hotel_name" colspan="2">')[1].split('<span class="nowrap pb-conf-rating">')[0].strip()
+    return temp
+
 def gethomedata(postData):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     url = "https://maps.googleapis.com/maps/api/geocode/json?address="
@@ -124,6 +129,9 @@ def index(request):
 
         elif(postData["type"]=="GetHomeData"):
             return JsonResponse({"data": gethomedata(postData)})
+
+        elif(postData["type"]=="GetHomeName"):
+            return JsonResponse({"data": gethomename(postData)})
 
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
