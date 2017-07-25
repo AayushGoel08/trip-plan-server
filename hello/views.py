@@ -43,6 +43,13 @@ def sendhomename(postData):
     userTrip.save()
     return "Home location booked and saved"
 
+def savehomename(postData):
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+    userTrip.homename = postData["name"]
+    userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
+    userTrip.save()
+    return "Home location saved"
+
 def gethomedata(postData):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     url = "https://maps.googleapis.com/maps/api/geocode/json?address="
@@ -151,6 +158,9 @@ def index(request):
 
         elif(postData["type"]=="SendHomeName"):
             return JsonResponse({"data": sendhomename(postData)})
+
+        elif(postData["type"]=="SaveHomeName"):
+            return JsonResponse({"data": savehomename(postData)})
 
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
