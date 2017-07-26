@@ -147,7 +147,7 @@ def index(request):
             hometemp = userTrip.homedistances.split(";")
             for x in hometemp:
                 temp = x.split("-")
-                homedurations[x[0]] = int(x[1])
+                homedurations[temp[0]] = int(temp[1])
             response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
@@ -317,7 +317,7 @@ def bookings(request):
             hometemp = userTrip.homedistances.split(";")
             for x in hometemp:
                 temp = x.split("-")
-                homedurations[x[0]] = int(x[1])
+                homedurations[temp[0]] = int(temp[1])
 
             response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
