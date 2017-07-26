@@ -248,6 +248,12 @@ def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homed
                     traveltime[i].append(homedurations[str(locs[i][1])])
                 else:
                     traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
+            if(locs[j][0]=="place"):
+                totaltime[i].append(traveltime[i][j]+staytimeplaces[j-1])
+            elif(locs[j][0]=="homeint"):
+                totaltime[i].append(traveltime[i][j]+stayhomes[j-1-len(places)])
+            else:
+                totaltime[i].append(traveltime[i][j])
     #print(traveltime)
     prob = LpProblem("Travel Time",LpMinimize)
     prob += objvar, "Minimize travel time"
