@@ -141,9 +141,14 @@ def index(request):
                 staytimeplaces.append(loc.time)
                 locids.append(loc.locid)
                 locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
-            homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
-            locdata["Home"] = [homeLoc.coordinates]
-            response = ilp(sleepstart, postData["home0"], locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
+            #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
+            locdata["Home"] = [userTrip.homecoordinates]
+            homedurations = {}
+            hometemp = userTrip.homedistances.split(";")
+            for x in hometemp:
+                temp = x.split("-")
+                homedurations[x[0]] = int(x[1])
+            response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
             for i in range(0,len(response[2])-1):
@@ -214,8 +219,8 @@ def index(request):
                 for loc in locs:
                     locids.append(loc.locid)
                     locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
-                homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
-                locdata["Home"] = [homeLoc.coordinates]
+                #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
+                locdata["Home"] = [userTrip.homecoordinates]
                 return JsonResponse({"status": 2, "locsdata": locdata, "routes": routeArr, "dates": [start, end]})
     else:
         trips = Trips.objects.all()
@@ -306,13 +311,15 @@ def bookings(request):
                     timeplaces.append([dateconversionsimple(start,timebooked[places.index(loc.locid)])])
                 staytimeplaces.append(loc.time)
                 locids.append(loc.locid)
-                locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
-            #To change home0 and homeLoc when adding homes facility
-            home0 = 9
-            homeLoc = Locations.objects.get(locid = home0, city = bookcity)
-            locdata["Home"] = [homeLoc.coordinates]
-            #To change home0 and homeLoc when adding homes facility 
-            response = ilp(sleepstart, home0, locids,timeplaces,staytimeplaces, numduration[0], numduration[1])
+                locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates] 
+            locdata["Home"] = [userTrip.homecoordinates]
+            homedurations = {}
+            hometemp = userTrip.homedistances.split(";")
+            for x in hometemp:
+                temp = x.split("-")
+                homedurations[x[0]] = int(x[1])
+
+            response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
             for i in range(0,len(response[2])-1):

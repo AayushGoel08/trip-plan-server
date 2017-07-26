@@ -171,7 +171,7 @@ def dateconversion(start, end, acttype,hours):
     return timepoints
 
                 
-def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays):
+def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homedurations):
     distances = []
 
     with open("praguedistances.txt") as f:
@@ -191,11 +191,11 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         distancemat[int(content[0])-1][int(content[1])-1] = int(content[2])
         
     locs = []
-    locs.append(["home0",home0])
+    locs.append(["home0",0])
     for x in places:
         locs.append(["place",x])
     for i in range(0,numdays-1):
-        locs.append(["homeint",home0])
+        locs.append(["homeint",0])
 
     timevars = []
     for i in range(0,len(places)+numdays):
@@ -231,14 +231,23 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         for j in range(0,len(locs)):
             if(i==j):
                 traveltime[i].append(excessdist)
+            elif(locs[i][0]=="home0"):
+                if(locs[j][0]=="homeint"):
+                    traveltime[i].append(1)
+                else:
+                    traveltime[i].append(homedurations[str(locs[j][1])])
+            elif(locs[i][0]=="homeint"):
+                if(locs[j][0]=="home0"):
+                    traveltime[i].append(1)
+                else:
+                    traveltime[i].append(homedurations[str(locs[j][1])])
             else:
-                traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
-            if(locs[j][0]=="place"):
-                totaltime[i].append(traveltime[i][j]+staytimeplaces[j-1])
-            elif(locs[j][0]=="homeint"):
-                totaltime[i].append(traveltime[i][j]+stayhomes[j-1-len(places)])
-            else:
-                totaltime[i].append(traveltime[i][j])
+                if(locs[j][0]=="home0"):
+                    traveltime[i].append(homedurations[str(locs[i][1])])
+                elif(locs[j][0]=="homeint"):
+                    traveltime[i].append(homedurations[str(locs[i][1])])
+                else:
+                    traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
     #print(traveltime)
     prob = LpProblem("Travel Time",LpMinimize)
     prob += objvar, "Minimize travel time"
