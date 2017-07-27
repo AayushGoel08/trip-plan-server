@@ -195,6 +195,13 @@ def index(request):
         elif(postData["type"]=="SaveHomeName"):
             return JsonResponse({"data": savehomename(postData)})
 
+        elif(postData["type"]=="RevertBookings"):
+            userTrips = Trips.objects.all()
+            for userTrip in usertTrips:
+                userTrip.status = 2
+                userTrip.save()
+            return JsonResponse({"data": Trips.objects.count()})
+        
         elif(postData["type"]=="GetTripData"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             if(userTrip.status==1 or userTrip.status==0):
