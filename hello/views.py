@@ -197,7 +197,7 @@ def index(request):
 
         elif(postData["type"]=="RevertBookings"):
             userTrips = Trips.objects.all()
-            for userTrip in usertTrips:
+            for userTrip in userTrips:
                 userTrip.status = 2
                 userTrip.save()
             return JsonResponse({"data": Trips.objects.count()})
