@@ -382,6 +382,6 @@ def bookings(request):
                     objs[ind]["datearr"].append(newdate.strftime("%d-%b-%Y %H:%M"))
                     objs[ind]["newdatenames"].append("newdate"+str(objs[ind]["bookcount"]))
 
-        for obj in objs:
-            obj["locidstr"] = '-'.join(str(x) for x in obj["locidarr"])
+        for i in range(0, len(objs)):
+            objs[i]["locidstr"] = '-'.join(str(x) for x in objs[i]["locidarr"])
         return render(request, 'bookings.html', {'bookings': objs})
