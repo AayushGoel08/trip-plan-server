@@ -36,5 +36,4 @@ class Bookings(models.Model):
     tripid = models.IntegerField()
     city = models.CharField(max_length=100)
     locid = models.IntegerField()
-    booked = models.IntegerField()
 

@@ -116,7 +116,7 @@ def insertLocationRecord(postData):
     loc.save()
 
 def insertBookingRecord(postData):
-    booking = Bookings(None,postData["fbid"],postData["tripid"],postData["city"],postData["locid"],0)
+    booking = Bookings(None,postData["fbid"],postData["tripid"],postData["city"],postData["locid"])
     booking.save()
     
 def index(request):
@@ -259,7 +259,7 @@ def bookings(request):
 
             elif(postData["type"]=="DeleteAll"):
                 Bookings.objects.all().delete()
-                return JsonResponse({"data": Locations.objects.count()})
+                return JsonResponse({"data": Bookings.objects.count()})
 
             elif(postData["type"]=="GetAllData"):
                 userbooks = Bookings.objects.all()
@@ -329,6 +329,7 @@ def bookings(request):
             routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
             userTrip.actuals = routeSaveString
             userTrip.actualstime = routeSaveTimes
+            userTrip.status = 4
             userTrip.save()
             return JsonResponse({"data": "New trip booked"})
            
