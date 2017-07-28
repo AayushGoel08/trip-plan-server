@@ -3,6 +3,7 @@ import math
 import datetime
 import time
 import calendar
+from operator import itemgetter
 
 def makeroute(numdays,places,times,staytimeplaces):
     routeString = []
