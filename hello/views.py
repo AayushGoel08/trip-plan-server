@@ -212,7 +212,7 @@ def index(request):
                 for loc in Locations.objects.filter(locid__in = possibles, city = postData["city"]):
                     locdata.append([loc.locid,loc.activity,loc.price,loc.time])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata})
-            elif(userTrip.status==2 or userTrip.status==3):
+            elif(userTrip.status>=2):
                 start = userTrip.start
                 end = userTrip.end
                 start = start.replace(tzinfo=None)
