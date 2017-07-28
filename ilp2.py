@@ -4,6 +4,26 @@ import datetime
 import time
 import calendar
 
+def makeroute(numdays,places,times,staytimeplaces):
+    routeString = []
+    routeTimes = []
+    coll = []
+    for i in range(0,numdays):
+        routeString.append("Home-")
+        routeTimes.append("Home-")
+    for i in range(0, len(places)):
+        coll.append((places[i], times[i], staytimeplaces[i]))
+    coll = sorted(coll,key=itemgetter(1))
+    for i in range(0, len(coll)):
+        ind = int(coll[i][1]//1440)
+        routeString[ind] = routeString[ind]+str(coll[i][0])+"-"
+        routeTimes[ind] = routeTimes[ind]+str(coll[i][1])+"-"
+    for i in range(0,len(routeString)):
+        routeString[i] = routeString[i]+ "Home"
+        routeTimes[i] = routeTimes[i]+ "Home"
+    return [routeString,routeTimes]
+
+
 def triplimit(start,end):
     durationmin = int((end - start).total_seconds()/60)
     durationdays = int(math.ceil(durationmin/1440))
@@ -150,7 +170,7 @@ def dateconversion(start, end, acttype,hours):
     return timepoints
 
                 
-def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays):
+def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homedurations):
     distances = []
 
     with open("praguedistances.txt") as f:
@@ -170,11 +190,11 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         distancemat[int(content[0])-1][int(content[1])-1] = int(content[2])
         
     locs = []
-    locs.append(["home0",home0])
+    locs.append(["home0",0])
     for x in places:
         locs.append(["place",x])
     for i in range(0,numdays-1):
-        locs.append(["homeint",home0])
+        locs.append(["homeint",0])
 
     starttimevars = []
     endtimevars = []
@@ -211,8 +231,23 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         for j in range(0,len(locs)):
             if(i==j):
                 traveltime[i].append(excessdist)
+            elif(locs[i][0]=="home0"):
+                if(locs[j][0]=="homeint"):
+                    traveltime[i].append(1)
+                else:
+                    traveltime[i].append(homedurations[str(locs[j][1])])
+            elif(locs[i][0]=="homeint"):
+                if(locs[j][0]=="home0"):
+                    traveltime[i].append(1)
+                else:
+                    traveltime[i].append(homedurations[str(locs[j][1])])
             else:
-                traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
+                if(locs[j][0]=="home0"):
+                    traveltime[i].append(homedurations[str(locs[i][1])])
+                elif(locs[j][0]=="homeint"):
+                    traveltime[i].append(homedurations[str(locs[i][1])])
+                else:
+                    traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
             #if(locs[j][0]=="place"):
             #    totaltime[i].append(traveltime[i][j]+staytimeplaces[j-1])
             #elif(locs[j][0]=="homeint"):
@@ -286,38 +321,12 @@ def ilp(sleepstart, home0, places, timeplaces, staytimeplaces, duration, numdays
         #prob += starttimevars[len(places)+i] >= starttimehomes[i], "Start Time for Homes "+str(i)
         prob += endtimevars[len(places)+i] >= endtimehomes[i], "End Time for Homes "+str(i)
 
-    prob.writeLP("RoutingModel.lp")
+    #prob.writeLP("RoutingModel.lp")
     prob.solve()
     if(LpStatus[prob.status]=="Optimal"):
-        print("Time = ", value(prob.objective))
-        for i in range(0,len(endtimevars)):
-            print(value(starttimevars[i]) ,"-",value(endtimevars[i]))
-        return "Solution Found"
+        #print("Time = ", value(prob.objective))
+        times = [value(x) for x in starttimevars]
+        routeString = makeroute(numdays, places,times,staytimeplaces)
+        return [times,"Solution Found", routeString[0],routeString[1]]
     else:
-        return "Solution not found"
-
-locs = [["Skydiving","Dlouhá 612/6, 110 00 Staré Město, Czechia",250,"Slots","Daily - 9, 10, 11, 12, 13, 14, 15, 16",180,"Yes"],["Shooting","Vinohradská 2279/164, 130 00 Praha 3, Czechia",50,"Slots","Monday, Tuesday, Wednesday, Thursday, Friday, Saturday - 10, 11, 12, 13, 14, 15",180,"Yes"],["John Lennon Wall","Velkopřevorské náměstí, Malá Strana, 100 00 Praha 1, Czechia",0,"Unrestricted","-",30,"No"],["Sex Machines Museum","Melantrichova 476/18, 110 00 Praha 1-Staré Město, Czechia",10,"Regular","Daily - 10 to 23",60,"No"],["Museum of Torture","Celetná 558/12, 110 00 Staré Město, Czechia",10,"Regular","Daily - 10 to 20",60,"No"],["Pub-crawl","Celetná 558/12, 110 00 Staré Město, Czechia",22,"Slots","Daily - 19:45, 20:45",240,"Yes"],["Ice Bar","200 1, Novotného lávka 200/5, 110 00 Praha 1-Staré Město, Czechia",12,"Regular","Daily - 12 to 5",60,"No"],["Top of old town hall tower","Staroměstské nám. 1/3, 110 00 Praha 1-Staré Město, Czechia",10,"Regular","Daily - 11 to 22",60,"No"],["Astronomical Clock at 'o clock","Staroměstské nám. 1/4, 110 00 Praha 1-Staré Město, Czechia",0,"Unrestricted","-",20,"No"],["Beer Museum","Smetanovo nábř. 205/22, 110 00 Praha 1-Staré Město, Czechia",11,"Regular","Daily - 10 to 20",60,"No"],["Drink becherovka - Prague's local drink","Přemyslovská 2845/43, 130 00 Praha 3, Czechia",5,"Regular","Daily - 8 to 22",10,"No"],["Lego Museum","Národní 362/31, 110 00 Praha 1-Staré Město-Staré Město, Czechia",8,"Regular","Daily - 10 to 20",60,"No"],["U Pinkasů restaurant - Pilsner Urquell tasting room","Jungmannovo nám. 15/16, 110 00 Praha 1-Můstek, Czechia",10,"Regular","Daily - 10 to 23:30",60,"No"],["Museum of Instruments","Karmelitská 388/2, 118 00 Praha 1-Malá Strana, Czechia",5,"Regular","Monday, Wednesday, Thursday, Friday, Saturday, Sunday - 10 to 18",90,"No"],["Museum of Alchemists and Magicians of Old Prague","Jánský vršek 8, 118 00 Praha 1-Malá Strana, Czechia",7.5,"Regular","Daily - 10 to 20",90,"No"],["Museum of Miniatures","Strahovské nádvoří 11, 118 00 Praha 1, Czechia",4,"Regular","Daily - 9 to 17",90,"No"],["Hot Cholcolate at Café Kaficko","Maltézské nám. 473/15, 118 00 Praha 1-Malá Strana, Czechia",5,"Regular","Daily - 10 to 20",90,"No"],["Panorama of Prague from Letna Park","170 00 Prague 7, Czechia",0,"Unrestricted","-",60,"No"],["Eat a Trdelnik","Karlova 190/1, 110 00 Praha 1-Staré Město, Czechia",3,"Regular","Daily - 10 to 22",30,"No"],["Communism and Nuclear Bunker Tour","Malé nám. 11, 110 00 Praha 1-Staré Město, Czechia",23,"Slots","Daily - 10:30, 14:30",120,"No"],["Glance at the Dancing House","Jiráskovo nám. 1981/6, 120 00 Praha 2-Nové Město, Czechia",0,"Unrestricted","-",10,"No"],["Mind Maze Escape Game","Tyršova 9, 120 00 Praha 2-Nové Město, Czechia",23,"Regular","Daily - 10:30 to 22",90,"Yes"],["Drink Absinthe","Jilská 7, 110 00 Praha-Staré Město, Czechia",10,"Regular","Daily - 12 to 0",60,"No"],["Clubbing at Klub Karlovy Lazne","Smetanovo nábř. 198/1, 110 00 Staré Město, Czechia",6,"Regular","Daily - 21 to 5",180,"No"],["Prague beer and food tour","New Town, 110 00 Prague 1, Czechia",55,"Slots","Daily - 17",240,"Yes"],["Take a stroll across the Charles Bridge","Karlův most, 110 00 Praha 1, Czechia",0,"Unrestricted","-",20,"No"],["Off Road Quad Bikes","Dlouhá 705/16, 110 00 Praha 1-Staré Město, Czechia",70,"Slots","Daily - 10, 12:30, 15",150,"Yes"],["Four seasons vivaldi concert","Karlova 183/14, 110 00 Staré Město, Czechia",24,"Occurrence","11 July 2017 - 19, 12 July 2017 - 19,  15 July - 19, 17 July 2017 - 19, 18 July 2017 - 19",65,"Yes"],["Swan Lake ballet","nám. Republiky 3/4, 110 00 Praha 1-Nové Město, Czechia",35,"Occurrence","13 July 2017 - 15, 15 July 2017 - 15,  17 July 2017 - 15, 19 July 2017 - 15, 21 July 2017 - 15",65,"Yes"],["System of a down concert","Českomoravská 2345/17, 190 00 Praha 9, Czechia",70,"Occurrence","19 July 2017 - 13",180,"Yes"],["Foo fighters concert","Českomoravská 2345/17, 190 00 Praha 9, Czechia",75,"Occurrence","18 July 2017 - 20",180,"Yes"],["Romeo and Juliet ballet","Národní 2, 110 00 Nové Město, Czechia",35,"Occurrence","18 August 2017 - 20:30, 20 August 2017 - 20:30, 25 August 2017 - 20:30, 27 August 2017 - 20:30, 2 September 2017 - 19:30",100,"Yes"],["Phantom - Black Light theatre","Karoliny Světlé 286/18, 110 00 Praha 1-Staré Město, Czechia",22,"Slots","Tuesday, Thursday, Friday, Saturday - 20",90,"Yes"],["Mini Beer festival","Mariánské hradby, 118 00 Praha 1, Czechia",10,"Duration","17 July 2017 to 18 July 2017 - 9 to 17",120,"No"],["Metronome festival","Výstaviště, 170 00 Praha 7, Czechia",105,"Duration","23 July 2017 to 24 July 2017 - 13 to 5",240,"Yes"],["Petrin Tower and view from top","Petřínské sady, 118 00 Praha 1, Czechia",6,"Regular","Daily - 10 to 22",60,"No"],["Palladium shopping centre prague","nám. Republiky 1, 110 00 Nové Město, Czechia",20,"Regular","Daily - 9 to 21",90,"No"],["KGB Museum","Vlašská 591/13, 118 00 Malá Strana, Czechia",10,"Regular","Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday - 10 to 17",60,"No"],["Museum of Chamber pots and toilets","Michalská 429/1, 110 00 Staré Město, Czechia",6,"Regular","Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday - 10 to 18",60,"No"],["Lobkowicz palace","Jiřská 3, 119 00 Praha 1, Czechia",11,"Regular","Daily - 10 to 18",60,"No"]]
-
-start = datetime.datetime(2017,7,17,9,0)
-end = datetime.datetime(2017,7,18,16,0)
-sleepstart = int((((start+datetime.timedelta(days=1)).replace(hour=1, minute=0)-start).total_seconds()/60))
-timeplaces = []
-staytimeplaces = []
-home0 = 9
-
-
-places = [1,2,3,4,7,15,16,17,18,37,40]
-timebooked = ["17-Jul-2017 11:00","","","","","","","","","",""]
-#places = [1,3,4,7]
-numduration = triplimit(start,end)
-print(numduration[0])
-for i in places:
-    if(timebooked[places.index(i)]==""):
-        timeplaces.append(dateconversion(start,end,locs[i-1][3],locs[i-1][4]))
-    else:
-        timeplaces.append([dateconversionsimple(start,timebooked[places.index(i)])])
-    staytimeplaces.append(locs[i-1][5])
-print(sleepstart)
-print(timeplaces)
-print(staytimeplaces)
-print(ilp(sleepstart, home0, places,timeplaces,staytimeplaces, numduration[0], numduration[1]))
+        return [[],"Solution not found"]
