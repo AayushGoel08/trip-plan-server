@@ -253,7 +253,6 @@ def db(request):
 
 def bookings(request):
     if(request.method=='POST'):
-        
         try:    
             jsonData = request.body.decode("utf-8")
             postData = json.loads(jsonData)
@@ -270,7 +269,7 @@ def bookings(request):
 
             elif(postData["type"]=="GetAllData"):
                 userbooks = Bookings.objects.all()
-                userentries = {"records": [[entry.fbid, entry.city,entry.tripid,entry.locid, entry.booked] for entry in userbooks]}
+                userentries = {"records": [[entry.fbid, entry.city,entry.tripid,entry.locid] for entry in userbooks]}
                 return JsonResponse({"data": userentries})
 
             elif(postData["type"]=="BookingRequest"):
