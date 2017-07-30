@@ -451,10 +451,10 @@ def entries(request):
                 hours = request.POST.get("timings", "")
             provider = "-"
             if(request.POST.get("provider","")!=""):
-                deposit = int(request.POST.get("provider",""))
+                provider = int(request.POST.get("provider",""))
             website = "-"
             if(request.POST.get("provider","")!=""):
-                deposit = int(request.POST.get("website",""))
+                website = int(request.POST.get("website",""))
             address = "-"
             coordinates = "-"
             loc = LocStore(city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
