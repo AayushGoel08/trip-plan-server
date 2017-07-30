@@ -440,12 +440,12 @@ def entries(request):
             imagelink = request.POST.get("image", "")
             time = int(request.POST.get("time", ""))
             rating = request.POST.get("rating", "")
-            price = int(request.POST.get("fbid", ""))
+            price = int(request.POST.get("price", ""))
             prebook = request.POST.get("prebook", "")
             deposit = 0
             if(request.POST.get("deposit","")!=""):
                 deposit = int(request.POST.get("deposit",""))
-            acttype = request.POST.get("prebook", "")
+            acttype = request.POST.get("type", "")
             hours = "-"
             if(acttype!="Unrestricted"):
                 hours = request.POST.get("timings", "")
