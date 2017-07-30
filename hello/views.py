@@ -415,6 +415,34 @@ def bookings(request):
 
 def entries(request):
     if(request.method=='POST'):
-        return JsonResponse({"data": request.POST.get("hashtag", "")})
+        city = request.POST.get("city", "")
+        locid = LocStore.objects.count()+1
+        name = request.POST.get("name", "")
+        title = request.POST.get("title", "")
+        hashtag = request.POST.get("hashtag", "")
+        description = request.POST.get("description", "")
+        imagelink = request.POST.get("image", "")
+        time = int(request.POST.get("time", ""))
+        rating = request.POST.get("rating", "")
+        price = int(request.POST.get("fbid", ""))
+        prebook = request.POST.get("prebook", "")
+        deposit = 0
+        if(request.POST.get("deposit","")!=""):
+            deposit = int(request.POST.get("deposit",""))
+        acttype = request.POST.get("prebook", "")
+        hours = "-"
+        if(acttype!="Unrestricted"):
+            hours = request.POST.get("timings", "")
+        provider = "-"
+        if(request.POST.get("provider","")!=""):
+            deposit = int(request.POST.get("provider",""))
+        website = "-"
+        if(request.POST.get("provider","")!=""):
+            deposit = int(request.POST.get("website",""))
+        address = "-"
+        coordinates = "-"
+        loc = LocStore(city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
+        loc.save()
+        return render(request, 'entries.html')
     else:
         return render(request, 'entries.html')
