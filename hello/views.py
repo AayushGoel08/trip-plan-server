@@ -7,6 +7,7 @@ from .models import Greeting
 from .models import Trips
 from .models import Locations
 from .models import Bookings
+from .models import LocStore
 
 import json
 import datetime
