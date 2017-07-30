@@ -106,7 +106,7 @@ def insertTripRecord(postData):
             possibles = possibles+str(loc.locid)+","
             locsdata.append([loc.locid,loc.activity,loc.price,loc.time])
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", postData["group"])
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]))
     userTrip.save()
     return [locsdata,tripid]
     
@@ -151,6 +151,16 @@ def index(request):
             response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
+            routeDispTimes = []
+            for i in range(0,len(response[3])):
+                routeDispTimes.append("Home-")
+                tempStr = response[3][i].split("-")
+                for x in tempStr:
+                    if(x!="Home"):
+                        dispDate = start+datetime.timedelta(minutes=float(x))
+                        dispTime = dispDate.time().strftime("%I:%M %p")
+                        routeDispTimes[i] = routeDispTimes[i]+dispTime+"-"
+                routeDispTimes[i] = routeDispTimes[i]+"Home"
             for i in range(0,len(response[2])-1):
                 routeSaveString = routeSaveString + response[2][i]+";"
                 routeSaveTimes = routeSaveTimes + response[3][i]+";"
@@ -160,7 +170,7 @@ def index(request):
             userTrip.actualstime = routeSaveTimes
             userTrip.status = 2
             userTrip.save()
-            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end]})
+            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end], "disptimes": routeDispTimes})
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
