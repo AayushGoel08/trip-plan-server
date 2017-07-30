@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="container">
+
+
+<h2>Entry Form for Activities</h2>
+<form action="/bookings" method="post">
+		<input type="text" name="ActivityName"><br/>
+		<input type="submit" value="Book">
+</form>
+  
+	
+</div>
+
+{% endblock %}

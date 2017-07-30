@@ -411,3 +411,7 @@ def bookings(request):
         for i in range(0, len(objs)):
             objs[i]["locidstr"] = '-'.join(str(x) for x in objs[i]["locidarr"])
         return render(request, 'bookings.html', {'bookings': objs})
+
+
+def entries(request):
+    return render(request, 'entries.html')
