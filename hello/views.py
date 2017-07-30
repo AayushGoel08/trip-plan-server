@@ -414,4 +414,7 @@ def bookings(request):
 
 
 def entries(request):
-    return render(request, 'entries.html')
+    if(request.method=='POST'):
+        return JsonResponse({"data": request.POST.get("hashtag", "")})
+    else:
+        return render(request, 'entries.html')
