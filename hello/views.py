@@ -431,7 +431,7 @@ def entries(request):
                 return JsonResponse({"data": userentries})
         except:
             city = request.POST.get("city", "")
-            locid = LocStore.objects.filter(city = request.POST.get("city","").count()+1
+            locid = LocStore.objects.filter(city = request.POST.get("city","")).count()+1
             name = request.POST.get("name", "")
             title = request.POST.get("title", "")
             hashtag = request.POST.get("hashtag", "")
