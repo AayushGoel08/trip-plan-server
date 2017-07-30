@@ -228,8 +228,18 @@ def index(request):
                 start = start.replace(tzinfo=None)
                 end = end.replace(tzinfo=None)
                 routeArr =  userTrip.actuals.split(";")
+                routeTimes = userTrip.actualstime.split(";")
                 places = getPlaces(routeArr)
-                
+                routeDispTimes = []
+                for i in range(0,len(routeTimes)):
+                    routeDispTimes.append("Home-")
+                    tempStr = routeTimes[i].split("-")
+                    for x in tempStr:
+                        if(x!="Home"):
+                            dispDate = start+datetime.timedelta(minutes=float(x))
+                            dispTime = dispDate.time().strftime("%I:%M %p")
+                            routeDispTimes[i] = routeDispTimes[i]+dispTime+"-"
+                    routeDispTimes[i] = routeDispTimes[i]+"Home"
                 locs = Locations.objects.filter(locid__in = places, city = postData["city"])
                 locids = []
                 locdata = {}
@@ -238,7 +248,7 @@ def index(request):
                     locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
                 #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
                 locdata["Home"] = [userTrip.homecoordinates]
-                return JsonResponse({"status": 2, "locsdata": locdata, "routes": routeArr, "dates": [start, end]})
+                return JsonResponse({"status": 2, "locsdata": locdata, "routes": routeArr, "dates": [start, end], "disptimes": routeDispTimes})
     else:
         trips = Trips.objects.all()
         return render(request, 'index.html', {'trips': trips})
