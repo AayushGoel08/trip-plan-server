@@ -17,6 +17,7 @@ class Trips(models.Model):
     homename = models.CharField(max_length=200,blank=True)
     homecoordinates = models.CharField(max_length=200,blank=True)
     homedistances = models.CharField(max_length=500,blank=True)
+    group = models.IntegerField()
     
 
 class Locations(models.Model):
