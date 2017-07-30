@@ -457,7 +457,7 @@ def entries(request):
                 website = request.POST.get("website","")
             address = "-"
             coordinates = "-"
-            loc = LocStore(city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
+            loc = LocStore(None,city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
             loc.save()
             return render(request, 'entries.html')
     else:
