@@ -453,7 +453,7 @@ def entries(request):
             if(request.POST.get("provider","")!=""):
                 provider = request.POST.get("provider","")
             website = "-"
-            if(request.POST.get("provider","")!=""):
+            if(request.POST.get("website","")!=""):
                 website = request.POST.get("website","")
             address = "-"
             coordinates = "-"
