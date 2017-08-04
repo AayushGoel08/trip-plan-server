@@ -481,7 +481,7 @@ def edit(request):
                 userLoc.deposit = int(request.POST.get("deposit",""))
             userLoc.acttype = request.POST.get("type", "")
             userLoc.hours = "-"
-            if(acttype!="Unrestricted"):
+            if(userLoc.acttype!="Unrestricted"):
                 userLoc.hours = request.POST.get("timings", "")
             userLoc.provider = "-"
             if(request.POST.get("provider","")!=""):
