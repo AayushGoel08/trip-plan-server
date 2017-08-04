@@ -465,7 +465,7 @@ def entries(request):
 
 def edit(request):
     if(request.method=='POST'):
-            userLoc = LocStore.objects.get(locid = int(request.POST.get("locid", "")), city = request.POST.get("locid", ""))
+            userLoc = LocStore.objects.get(locid = int(request.POST.get("locid", "")), city = request.POST.get("city", ""))
             city = request.POST.get("city", "")
             userLoc.name = request.POST.get("name", "")
             userLoc.title = request.POST.get("title", "")
