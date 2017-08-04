@@ -462,3 +462,36 @@ def entries(request):
             return render(request, 'entries.html')
     else:
         return render(request, 'entries.html')
+
+def edit(request):
+    if(request.method=='POST'):
+            userLoc = LocStore.objects.get(locid = int(request.POST.get("locid", "")), city = request.POST.get("locid", ""))
+            city = request.POST.get("city", "")
+            userLoc.name = request.POST.get("name", "")
+            userLoc.title = request.POST.get("title", "")
+            userLoc.hashtag = request.POST.get("hashtag", "")
+            userLoc.description = request.POST.get("description", "")
+            userLoc.imagelink = request.POST.get("image", "")
+            userLoc.time = int(request.POST.get("time", ""))
+            userLoc.rating = request.POST.get("rating", "")
+            userLoc.price = int(request.POST.get("price", ""))
+            userLoc.prebook = request.POST.get("prebook", "")
+            userLoc.deposit = 0
+            if(request.POST.get("deposit","")!=""):
+                userLoc.deposit = int(request.POST.get("deposit",""))
+            userLoc.acttype = request.POST.get("type", "")
+            userLoc.hours = "-"
+            if(acttype!="Unrestricted"):
+                userLoc.hours = request.POST.get("timings", "")
+            userLoc.provider = "-"
+            if(request.POST.get("provider","")!=""):
+                userLoc.provider = request.POST.get("provider","")
+            userLoc.website = "-"
+            if(request.POST.get("website","")!=""):
+                userLoc.website = request.POST.get("website","")
+            userLoc.address = "-"
+            userLoc.coordinates = "-"
+            userLoc.save()
+            return render(request, 'edit.html')
+    else:
+        return render(request, 'edit.html')

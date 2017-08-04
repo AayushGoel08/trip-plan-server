@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="container">
+
+
+<h2>Entry Form for Activities</h2>
+<form action="/edit" method="post">
+		<b>Location ID</b><br/>
+		Write down the location ID of the activity.<br/>
+		<input type="text" size="50" name="locid"><br/><br/>
+		
+		<b>City</b><br/>
+		Write down the name of the city. First letter of city should be capital, rest all small.<br/>
+		<input type="text" size="50" name="city"><br/><br/>
+		
+		<b>Activity/Venue Name</b><br/>
+		Fill in the name of the activity or venue as written in TripAdvisor, Google or any other source<br/>
+		Can be name of museum, restaurants, venues etc. or as listed on the source.<br/>
+		<input type="text" size="50" name="name"><br/><br/>
+		
+		<b>Activity Title</b><br/>
+		Fill in the title of the activity as you would like it to be displayed in the App.<br/>
+		Use Action Titles, make the titles interesting. Convert all foreign words to English.<br/>
+		Capture the essence of what you can do at the venue in less than 8 words.<br/>
+		<input type="text" size="50" name="title"><br/><br/>
+		
+		<b>Filter Hashtag</b><br/>
+		Select the hashtag which most corresponds to the type of activity.<br/>
+		<select name="hashtag">
+			<option value="#Popular">#Popular - Typical tourist attractions for which the city is known for</option>
+			<option value="#Adventure">#Adventure - Adventure Sports and Outdoor Activities</option>
+			<option value="#Culture">#Culture - Anything related to history, art, classical music or city culture</option>
+			<option value="#Unique">#Unique - Speciality museums or any outdoor venues which have the connotation of being cool</option>
+			<option value="#Drink">#Drink - Anything liquor related including nightlife</option>
+			<option value="#Food">#Food - Anything food related</option>
+			<option value="#Explore">#Explore - Open districts or neighbourhoods which the city is known for</option>
+			<option value="#Shopping">#Shopping - All shopping districts and venues</option>
+			<option value="#Events">#Events - All one-time events such as concerts, operas, festivals or any other local events</option>
+		</select><br/><br/>
+		
+		<b>Activity Description</b><br/>
+		Fill in the description of the activity including what can be done in the activity. An extension of activity title.<br/>
+		Do not use more than two lines<br/>
+		<textarea name="description" rows="5" cols="50"></textarea><br/><br/>
+		
+		<b>Image Link</b><br/>
+		Link to an image which captures the essence of the activity. Use Google Images wherever preferred.<br/>
+		<input type="text" size="50" name="image"><br/><br/>
+		
+		<b>Recommended time for activity (in minutes)</b><br/>
+		Recommended time to spend on activity in minutes.<br/>
+		<input type="text" size="50" name="time"><br/><br/>
+		
+		<b>Rating</b><br/>
+		If the activity has a TripAdvisor or any other source rating, fill it here.<br/>
+		<input type="text" size="50" name="rating"><br/><br/>
+		
+		<b>Price</b><br/>
+		Enter lowest possible price of Activity, if free, then enter 0.<br/>
+		<input type="text" size="50" name="price"><br/><br/>
+				
+		
+		<b>Compulsory Pre-book</b><br/>
+		Select Yes if an advance reservation is required to do this activity. If optional reservation or no reservation, select No.<br/>
+		<select name="prebook">
+			<option value="Yes">Yes</option>
+			<option value="No">No</option>
+		</select><br/><br/>
+		
+		<b>Deposit</b><br/>
+		Enter advance deposit to be paid (if any) for the activity. If not applicable, leave blank.<br/>
+		<input type="text" size="50" name="deposit"><br/><br/>
+		
+		<b>Time Availability type</b><br/>
+		Select the availability type which most corresponds to the type of activity.<br/>
+		<select name="type">
+			<option value="Unrestricted">Unrestricted - Open public spots which can be visited 24x7</option>
+			<option value="Regular">Regular - Activities which are open for 5-7 days a week for a fixed time each day e.g. Museums</option>
+			<option value="Slots">Slots - Activities which are open for 5-7 days days a week but require you to come at pre-defined reserved times e.g. Adventure Spots</option>
+			<option value="Occurence">Occurence - Activities which occur only at discrete points i.e. have a fixed date and fixed time e.g. Concerts</option>
+			<option value="Duration">Duration - Activities which are only open for a few days e.g. Festivals</option>
+		</select><br/><br/>
+		
+		<b>Timings</b><br/>
+		Enter timings of the activity. (Please fill in format taking care of spaces)<br/><br/>
+		Format: <br/>
+		Unrestricted activities - Do not enter anything.<br/><br/>
+		Regular activities - Days for which activity open seperated by ", " (Write Daily if open all days) " - " Time when open (24hr format) "to" Time when close (24 hr format)<br/>
+		e.g. Monday, Tuesday, Wednesday, Friday, Saturday - 9 to 18 or Daily - 8:30 to 20:30<br/><br/>
+		Slots - Days for which activity open seperated by ", " (Write Daily if open all days) " - " Start time (24 hr format) " to " End time (24 hr format) " - " "Every " Frequency in minutes " min"<br/>
+		e.g. Daily - 9 to 15 - Every 60 min or Monday, Tuesday, Wednesday - 10 to 13 - Every 90 min<br/><br/>
+		Occurence - Full date (in format DD Full_Month_Name Year) " - " Time when occuring (24hr format). In case of multiple occurences, separated by ", "<br/>
+		e.g. 18 August 2017 - 20:30, 20 September 2017 - 19<br/><br/>
+		Duration - Start Date (in format DD Full_Month_Name Year) " to " End Date (in format DD Full_Month_Name Year) " - " Start Time (24 hr format) " to " End Time (24 hr format)<br/>
+		e.g. 17 July 2017 to 18 July 2017 - 9 to 17<br/>
+		<input type="text" size="50" name="timings"><br/><br/>
+		
+		<b>Provider</b><br/>
+		Fill in name of provider who provides the activity. Majorly applicable for Adventure Sports and Events. Leave blank if not known.<br/>
+		<input type="text" size="50" name="provider"><br/><br/>
+		
+		<b>Website for booking</b><br/>
+		Enter website of provider from where the activity can be booked. In case not applicable, leave blank.<br/>
+		In case of multiple activities from the same provider, fill in a common page from where all the activities can be accessed.<br/>
+		<input type="text" size="50" name="website"><br/><br/><br/>
+		
+</form>
+  
+	
+</div>
+
+{% endblock %}
