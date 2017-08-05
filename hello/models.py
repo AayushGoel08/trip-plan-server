@@ -25,7 +25,7 @@ class Locations(models.Model):
     locid = models.IntegerField()
     activity = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
-    price = models.IntegerField()
+    price = models.CharField(max_length=500, blank=True)
     acttype = models.CharField(max_length=100)
     hours = models.CharField(max_length=300)
     time = models.IntegerField()
