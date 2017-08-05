@@ -268,6 +268,11 @@ def db(request):
         elif(postData["type"]=="DeleteAll"):
             Locations.objects.all().delete()
             return JsonResponse({"data": Locations.objects.count()})
+
+        elif(postData["type"]=="GetAllData"):
+                userlocs = Locations.objects.all()
+                userentries = {"records": [[entry.locid, entry.activity, entry.price] for entry in userlocs]}
+                return JsonResponse({"data": userentries})
     else:
         locations = Locations.objects.all()
         return render(request, 'db.html', {'locations': locations})
