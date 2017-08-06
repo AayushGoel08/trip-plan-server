@@ -269,9 +269,17 @@ def db(request):
             Locations.objects.all().delete()
             return JsonResponse({"data": Locations.objects.count()})
 
+        elif(postData["type"]=="InsertHashtags"):
+            hashtags = ["#Popular","#Adventure","#Culture","#Unique","#Drink","#Food","#Explore","#Shopping","#Events"]
+            userlocs = Locations.objects.all()
+            for entry in userlocs:
+                entry.hashtag = hashtags[(entry.locid%9)]
+                entry.save()
+            return JsonResponse({"message": "Done"})
+
         elif(postData["type"]=="GetAllData"):
                 userlocs = Locations.objects.all()
-                userentries = {"records": [[entry.locid, entry.activity, entry.price] for entry in userlocs]}
+                userentries = {"records": [[entry.locid, entry.activity, entry.price, entry.hashtag] for entry in userlocs]}
                 return JsonResponse({"data": userentries})
     else:
         locations = Locations.objects.all()

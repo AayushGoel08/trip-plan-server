@@ -31,6 +31,7 @@ class Locations(models.Model):
     time = models.IntegerField()
     book = models.CharField(max_length=50)
     coordinates = models.CharField(max_length=200)
+    hashtag = models.CharField(max_length=200)
 
 class Bookings(models.Model):
     fbid = models.CharField(max_length=100)
