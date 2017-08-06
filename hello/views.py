@@ -105,7 +105,7 @@ def insertTripRecord(postData):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
-            locsdata.append([loc.locid,loc.activity,loc.price,loc.time])
+            locsdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag])
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]))
     userTrip.save()
