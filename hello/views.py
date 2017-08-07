@@ -249,7 +249,7 @@ def index(request):
                     locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
                 #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
                 locdata["Home"] = [userTrip.homecoordinates]
-                return JsonResponse({"status": 2, "locsdata": locdata, "routes": routeArr, "dates": [start, end], "disptimes": routeDispTimes})
+                return JsonResponse({"status": userTrip.status, "locsdata": locdata, "routes": routeArr, "dates": [start, end], "disptimes": routeDispTimes})
     else:
         trips = Trips.objects.all()
         return render(request, 'index.html', {'trips': trips})
