@@ -18,6 +18,8 @@ class Trips(models.Model):
     homecoordinates = models.CharField(max_length=200,blank=True)
     homedistances = models.CharField(max_length=500,blank=True)
     group = models.IntegerField()
+    selections = models.CharField(max_length=500, blank=True)
+    traversions = models.CharField(max_length=500, blank=True)
     
 
 class Locations(models.Model):
@@ -25,13 +27,14 @@ class Locations(models.Model):
     locid = models.IntegerField()
     activity = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
-    price = models.CharField(max_length=500, blank=True)
+    price = models.CharField(max_length=500)
     acttype = models.CharField(max_length=100)
     hours = models.CharField(max_length=300)
     time = models.IntegerField()
     book = models.CharField(max_length=50)
     coordinates = models.CharField(max_length=200)
     hashtag = models.CharField(max_length=200)
+    deposit = models.CharField(max_length=500)
 
 class Bookings(models.Model):
     fbid = models.CharField(max_length=100)
