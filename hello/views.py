@@ -105,7 +105,7 @@ def insertTripRecord(postData):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
-            locsdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag])
+            locsdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag,loc.deposit])
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
     userTrip.save()
@@ -221,7 +221,7 @@ def index(request):
                 for i in range(0,len(possibles)):
                     possibles[i] = int(possibles[i])
                 for loc in Locations.objects.filter(locid__in = possibles, city = postData["city"]):
-                    locdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag])
+                    locdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag,loc.deposit])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata})
             elif(userTrip.status>=2):
                 start = userTrip.start
@@ -279,7 +279,7 @@ def db(request):
 
         elif(postData["type"]=="GetAllData"):
                 userlocs = Locations.objects.all()
-                userentries = {"records": [[entry.locid, entry.activity, entry.price, entry.hashtag] for entry in userlocs]}
+                userentries = {"records": [[entry.locid, entry.activity, entry.price, entry.hashtag, entry.deposit] for entry in userlocs]}
                 return JsonResponse({"data": userentries})
     else:
         locations = Locations.objects.all()
