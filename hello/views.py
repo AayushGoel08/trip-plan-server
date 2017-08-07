@@ -208,8 +208,8 @@ def index(request):
 
         elif(postData["type"]=="UpdateSelections"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
-            userTrip.selections = "-".join(postData["selections"])
-            userTrip.traversions = "-".join(postData["traversions"])
+            userTrip.selections = "-".join(str(x) for x in postData["selections"])
+            userTrip.traversions = "-".join(str(x) for x in postData["traversions"])
             userTrip.save()
             return JsonResponse({"data": "Updates performed"})
 
