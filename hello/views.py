@@ -191,7 +191,7 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group] for entry in usertrips]}
+            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions] for entry in usertrips]}
             return JsonResponse({"data": userentries})
 
         elif(postData["type"]=="GetHomeData"):
@@ -205,6 +205,13 @@ def index(request):
 
         elif(postData["type"]=="SaveHomeName"):
             return JsonResponse({"data": savehomename(postData)})
+
+        elif(postData["type"]=="UpdateSelections"):
+            userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+            userTrip.selections = "-".join(postData["selections"])
+            userTrip.traversions = "-".join(postData["traversions"])
+            userTrip.save()
+            return JsonResponse({"data": "Updates performed"})
 
         elif(postData["type"]=="RevertBookings"):
             userTrips = Trips.objects.all()
