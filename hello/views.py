@@ -107,7 +107,7 @@ def insertTripRecord(postData):
             possibles = possibles+str(loc.locid)+","
             locsdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag])
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]))
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
     userTrip.save()
     return [locsdata,tripid]
     
@@ -270,10 +270,10 @@ def db(request):
             return JsonResponse({"data": Locations.objects.count()})
 
         elif(postData["type"]=="InsertHashtags"):
-            hashtags = ["#Popular","#Adventure","#Culture","#Unique","#Drink","#Food","#Explore","#Shopping","#Events"]
             userlocs = Locations.objects.all()
+            deposit = ["0","1","2"]
             for entry in userlocs:
-                entry.hashtag = hashtags[(entry.locid%9)]
+                entry.deposit = deposit[(entry.locid%3)]
                 entry.save()
             return JsonResponse({"message": "Done"})
 
