@@ -49,41 +49,90 @@ def dateconversion(start, end, acttype,hours):
         times = []
         days = []
         if(data[0]=="Daily"):
-            temp = data[1].split(", ")
-            for x in temp:
-                x = x.split(":")
-                if(len(x)==2):
-                    times.append([int(x[0]),int(x[1])])
-                else:
-                    times.append([int(x[0]),0])
-                    
-            initday = start.date()
-            while(initday<=end.date()):
-                for x in times:
-                    initdate = datetime.datetime(initday.year,initday.month,initday.day,x[0],x[1])
-                    if(initdate>=start and initdate<end):
-                        timepoints.append([int((initdate - start).total_seconds()/60)])
-                initday = initday + datetime.timedelta(days=1)
+            if(len(data)==2):
+                temp = data[1].split(", ")
+                for x in temp:
+                        x = x.split(":")
+                        if(len(x)==2):
+                            times.append([int(x[0]),int(x[1])])
+                        else:
+                            times.append([int(x[0]),0])
+                initday = start.date()                
+                while(initday<=end.date()):
+                        for x in times:
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,x[0],x[1])
+                                if(initdate>=start and initdate<end):
+                                    timepoints.append([int((initdate - start).total_seconds()/60)])
+                                initday = initday + datetime.timedelta(days=1)
+            else:
+                interval = int(data[2].split(" ")[1])
+                temp = data[1].split(" to ")
+                starthr = temp[0].split(":")
+                endhr = temp[0].split(":")
+                initday = start.date()
+                while(initday<=end.date()):
+                        endtime = ""
+                        initdate = ""
+                        if(len(starthr)==2):
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],starthr[1])
+                        else:
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],0)
+                        if(len(endhr)==2):
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],endhr[1])
+                        else:
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],0)
+                        if(endhr<starthr):
+                                endtime = endtime + datetime.timedelta(days=1)
+                        while(initdate<endtime):
+                                if(initdate>=start and initdate<end):
+                                        timepoints.append([int((initdate - start).total_seconds()/60)])
+                                initdate = initdate + datetime.timedelta(minutes=interval)
+                        initday = initday + datetime.timedelta(days=1)
+		
         else:
             daystruct = list(calendar.day_name)
             days = data[0].split(", ")
             for i in range(0, len(days)):
                 days[i] = daystruct.index(days[i])
-            temp = data[1].split(", ")
-            for x in temp:
-                x = x.split(":")
-                if(len(x)==2):
-                    times.append([int(x[0]),int(x[1])])
-                else:
-                    times.append([int(x[0]),0])
-                    
-            initday = start.date()
-            while(initday<=end.date()):
-                for x in times:
-                    initdate = datetime.datetime(initday.year,initday.month,initday.day,x[0],x[1])
-                    if(initdate>=start and initdate<end and initday.weekday() in days):
-                        timepoints.append([int((initdate - start).total_seconds()/60)])
-                initday = initday + datetime.timedelta(days=1)
+            if(len(data)==2):
+                temp = data[1].split(", ")
+                for x in temp:
+                	x = x.split(":")
+                	if(len(x)==2):
+                    		times.append([int(x[0]),int(x[1])])
+                	else:
+                    		times.append([int(x[0]),0])
+                initday = start.date()
+                while(initday<=end.date()):
+                        for x in times:
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,x[0],x[1])
+                                if(initdate>=start and initdate<end and initday.weekday() in days):
+                                        timepoints.append([int((initdate - start).total_seconds()/60)])
+                        initday = initday + datetime.timedelta(days=1)
+            else:
+                interval = int(data[2].split(" ")[1])
+                temp = data[1].split(" to ")
+                starthr = temp[0].split(":")
+                endhr = temp[0].split(":")
+                initday = start.date()
+                while(initday<=end.date()):
+                        endtime = ""
+                        initdate = ""
+                        if(len(starthr)==2):
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],starthr[1])
+                        else:
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],0)
+                        if(len(endhr)==2):
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],endhr[1])
+                        else:
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],0)
+                        if(endhr<starthr):
+                                endtime = endtime + datetime.timedelta(days=1)
+                        while(initdate<endtime):
+                                if(initdate>=start and initdate<end and initday.weekday() in days):
+                                        timepoints.append([int((initdate - start).total_seconds()/60)])
+                                initdate = initdate + datetime.timedelta(minutes=interval)
+                        initday = initday + datetime.timedelta(days=1)
     elif(acttype=="Regular"):
         data = hours.split(" - ")
         times = []
@@ -135,7 +184,17 @@ def dateconversion(start, end, acttype,hours):
                             timepoints.append([int((initdate1 - start).total_seconds()/60),durationmin])
                     initday = initday + datetime.timedelta(days=1)
     elif(acttype=="Occurence"):
-        data = hours.split(", ")
+        datatemp = hours.split(", ")
+        data = []
+        for y in datatemp:
+                temp = y.split(" - ")
+                entrytime = temp[1]
+                if(len(entrytime.split(":"))==1):
+                        entrytime = entrytime + ":00"
+                datesplit = temp[0].split(" ")
+                entrydays = datesplit[0].split("+")
+                for z in entrydays:
+                        data.append(z+" "+datesplit[1]+" "+datesplit[2]+" - "+entrytime)
         for x in data:
             initdate = datetime.datetime.strptime(x, "%d %B %Y - %H:%M")
             if(initdate>=start and initdate <end):

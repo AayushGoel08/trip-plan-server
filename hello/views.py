@@ -105,7 +105,24 @@ def insertTripRecord(postData):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
-            locsdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag,loc.deposit])
+            if(loc.acttype=="Occurence"):
+                tempprice = str(loc.price).split(", ")
+                if(len(tempprice)==1):
+                    locsdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                else:
+                    minprice = 10000
+                    pos = 0
+                    temptime = str(loc.time).split(", ")
+                    tempdates = loc.hours.split(", ")
+                    for i in range(0,len(tempprice)):
+                        if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                            if(int(tempprice[i])<minprice):
+                                minprice = tempprice[i]
+                                pos = i
+                    locsdata.append([loc.locid,loc.activity,int(tempprice[i]),int(temptime[i]),loc.hashtag,loc.deposit])
+            else:
+                locsdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
     userTrip.save()
@@ -138,8 +155,25 @@ def index(request):
             locdata = {}
             numduration = triplimit(start,end)
             for loc in locs:
+                if(loc.acttype=="Occurence"):
+                    tempprice = str(loc.price).split(", ")
+                    if(len(tempprice)==1):
+                        timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                    else:
+                        minprice = 10000
+                        pos = 0
+                        temptime = str(loc.time).split(", ")
+                        tempdates = loc.hours.split(", ")
+                        for i in range(0,len(tempprice)):
+                            if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                                if(int(tempprice[i])<minprice):
+                                    minprice = tempprice[i]
+                                    pos = i
+                        timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[i]))
+                else:
+                    timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
-                staytimeplaces.append(loc.time)
+                staytimeplaces.append(int(loc.time))
                 locids.append(loc.locid)
                 locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
             #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
@@ -228,7 +262,23 @@ def index(request):
                 for i in range(0,len(possibles)):
                     possibles[i] = int(possibles[i])
                 for loc in Locations.objects.filter(locid__in = possibles, city = postData["city"]):
-                    locdata.append([loc.locid,loc.activity,loc.price,loc.time,loc.hashtag,loc.deposit])
+                    if(loc.acttype=="Occurence"):
+                        tempprice = str(loc.price).split(", ")
+                        if(len(tempprice)==1):
+                            locdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                        else:
+                            minprice = 10000
+                            pos = 0
+                            temptime = str(loc.time).split(", ")
+                            tempdates = loc.hours.split(", ")
+                            for i in range(0,len(tempprice)):
+                                if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                                    if(int(tempprice[i])<minprice):
+                                        minprice = tempprice[i]
+                                        pos = i
+                            locdata.append([loc.locid,loc.activity,int(tempprice[i]),int(temptime[i]),loc.hashtag,loc.deposit])
+                    else:
+                        locdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions]})
             elif(userTrip.status>=2):
                 start = userTrip.start
