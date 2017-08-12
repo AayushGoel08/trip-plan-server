@@ -506,6 +506,11 @@ def entries(request):
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
                 return JsonResponse({"data": userentries})
 
+            elif(postData["type"]=="GetAllCityData"):
+                locs = LocStore.objects.filter(city = postData["city"])
+                userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
+                return JsonResponse({"data": userentries})
+
             elif(postData["type"]=="GetAllDistances"):
                 dists = Distances.objects.all()
                 userentries = {"records": [[dist.city,dist.originid,dist.destid,dist.distance] for dist in dists]}
