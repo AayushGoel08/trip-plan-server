@@ -522,7 +522,7 @@ def entries(request):
                     lng = data['results'][0]['geometry']['location']['lng']
                     address = data['results'][0]['formatted_address']
                     loc.address = address
-                    loc.coordinates = lat + " - " + lng
+                    loc.coordinates = str(lat) + " - " + str(lng)
                     loc.save()
                 #for x in locs:
                 #    for y in locs:
