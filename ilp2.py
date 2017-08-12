@@ -74,14 +74,14 @@ def dateconversion(start, end, acttype,hours):
                         endtime = ""
                         initdate = ""
                         if(len(starthr)==2):
-                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],starthr[1])
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,int(starthr[0]),int(starthr[1]))
                         else:
-                                initdate = datetime.datetime(initday.year,initday.month,initday.day,starthr[0],0)
+                                initdate = datetime.datetime(initday.year,initday.month,initday.day,int(starthr[0]),0)
                         if(len(endhr)==2):
-                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],endhr[1])
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),int(endhr[1]))
                         else:
-                                endtime = datetime.datetime(initday.year,initday.month,initday.day,endhr[0],0)
-                        if(endhr<starthr):
+                                endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),0)
+                        if(endtime<starttime):
                                 endtime = endtime + datetime.timedelta(days=1)
                         while(initdate<endtime):
                                 if(initdate>=start and initdate<end):
@@ -126,7 +126,7 @@ def dateconversion(start, end, acttype,hours):
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),int(endhr[1]))
                         else:
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),0)
-                        if(endhr<starthr):
+                        if(endtime<starttime):
                                 endtime = endtime + datetime.timedelta(days=1)
                         while(initdate<endtime):
                                 if(initdate>=start and initdate<end and initday.weekday() in days):
