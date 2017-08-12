@@ -492,6 +492,11 @@ def entries(request):
             if(postData["type"]=="Count"):
                 return JsonResponse({"count": LocStore.objects.count()})
 
+            elif(postData["type"]=="DeleteLoc"):
+                userloc = LocStore.objects.get(city=postData["city"],locid=postData["locid"])
+                userloc.delete()
+                return JsonResponse({"message": "Deleted"})
+
             elif(postData["type"]=="DeleteTemp"):
                 userloc = LocStore.objects.get(city="Amsterd",locid=1)
                 userloc.delete()
