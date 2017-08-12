@@ -81,7 +81,7 @@ def dateconversion(start, end, acttype,hours):
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),int(endhr[1]))
                         else:
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),0)
-                        if(endtime<starttime):
+                        if(endtime<initdate):
                                 endtime = endtime + datetime.timedelta(days=1)
                         while(initdate<endtime):
                                 if(initdate>=start and initdate<end):
@@ -126,7 +126,7 @@ def dateconversion(start, end, acttype,hours):
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),int(endhr[1]))
                         else:
                                 endtime = datetime.datetime(initday.year,initday.month,initday.day,int(endhr[0]),0)
-                        if(endtime<starttime):
+                        if(endtime<initdate):
                                 endtime = endtime + datetime.timedelta(days=1)
                         while(initdate<endtime):
                                 if(initdate>=start and initdate<end and initday.weekday() in days):
