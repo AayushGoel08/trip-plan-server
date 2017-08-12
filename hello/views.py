@@ -540,7 +540,7 @@ def entries(request):
                         if(len(time)==2):
                             timenum = int(time[0])
                         else:
-                        timenum = (int(time[0])*60) + (int(time[2]))
+                            timenum = (int(time[0])*60) + (int(time[2]))
                         if Distances.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
                             dist = Distances.get(city=postData["city"],originid=x.locid, destid=y.locid)
                             dist.distance = timenum
