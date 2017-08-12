@@ -183,7 +183,7 @@ def index(request):
             for x in hometemp:
                 temp = x.split("-")
                 homedurations[temp[0]] = int(temp[1])
-            response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
+            response = ilp(postData["city"],sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
             routeDispTimes = []
@@ -209,6 +209,11 @@ def index(request):
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
+
+        elif(postData["type"]=="DeleteTrip"):
+            userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+            userTrip.delete()
+            return JsonResponse({"message": "Trip Deleted"})
 
         elif(postData["type"]=="Insert"):
             locsdata = insertTripRecord(postData)

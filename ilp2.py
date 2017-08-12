@@ -230,14 +230,18 @@ def dateconversion(start, end, acttype,hours):
     return timepoints
 
                 
-def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homedurations):
+def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homedurations):
     distances = []
 
-    with open("praguedistances.txt") as f:
+    with open(city+"distances.txt") as f:
         distances = f.readlines()
     distances = [x.strip() for x in distances]
 
     numcount = int(math.sqrt(len(distances)))
+    indextracker = {}
+    for i in range(0,numcount):
+        content = distances[i].split(",")
+        indextracker[content[1]] = i+1
 
     distancemat = []
     for i in range(0,numcount):
@@ -247,7 +251,7 @@ def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homed
 
     for x in distances:
         content = x.split(",")
-        distancemat[int(content[0])-1][int(content[1])-1] = int(content[2])
+        distancemat[indextracker[content[0]]-1][indextracker[content[1]]-1] = int(content[2])
         
     locs = []
     locs.append(["home0",0])
@@ -307,7 +311,7 @@ def ilp(sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homed
                 elif(locs[j][0]=="homeint"):
                     traveltime[i].append(homedurations[str(locs[i][1])])
                 else:
-                    traveltime[i].append(distancemat[locs[i][1]-1][locs[j][1]-1])
+                    traveltime[i].append(distancemat[indextracker[str(locs[i][1])]-1][indextracker[str(locs[j][1])]-1])
             #if(locs[j][0]=="place"):
             #    totaltime[i].append(traveltime[i][j]+staytimeplaces[j-1])
             #elif(locs[j][0]=="homeint"):
