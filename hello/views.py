@@ -525,26 +525,26 @@ def entries(request):
                     loc.address = address
                     loc.coordinates = lat + " - " + lng
                     loc.save()
-                for x in locs:
-                    for y in locs:
-                        origincoord = x.coordinates.split(" - ")
-                        destcoord = y.coordinates.split(" - ")
-                        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origincoord[0]+","+origincoord[1]+"&destinations="+descoord[0]+","+destcoord[1]+"&mode=walking&key="+key
-                        data = requests.get(string).json()
-                        time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
-                        timenum = 0
+                #for x in locs:
+                #    for y in locs:
+                #        origincoord = x.coordinates.split(" - ")
+                #        destcoord = y.coordinates.split(" - ")
+                #        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origincoord[0]+","+origincoord[1]+"&destinations="+descoord[0]+","+destcoord[1]+"&mode=walking&key="+key
+                #        data = requests.get(string).json()
+                #        time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
+                #        timenum = 0
                         #Below code assumes x hours y minutes data format
-                        if(len(time)==2):
-                            timenum = int(time[0])
-                        else:
-                            timenum = (int(time[0])*60) + (int(time[2]))
-                        if Distances.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
-                            dist = Distances.get(city=postData["city"],originid=x.locid, destid=y.locid)
-                            dist.distance = timenum
-                            dist.save()
-                        else:
-                            dist = Distances(None,postData["city"],x.locid, y.locid,timenum)
-                            dist.save()
+                #        if(len(time)==2):
+                #            timenum = int(time[0])
+                #        else:
+                #            timenum = (int(time[0])*60) + (int(time[2]))
+                #        if Distances.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
+                #            dist = Distances.get(city=postData["city"],originid=x.locid, destid=y.locid)
+                #            dist.distance = timenum
+                #            dist.save()
+                #        else:
+                #            dist = Distances(None,postData["city"],x.locid, y.locid,timenum)
+                #            dist.save()
                 return JsonResponse({"message": "Done"})
                                 
         except:
