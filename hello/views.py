@@ -25,7 +25,7 @@ def getPlaces(routeArr):
 
 def gethomedistances(userTrip, lat, lng):
     distances = []
-    locs = Locations.objects.filter(city = userTrip.city)
+    locs = LocStore.objects.filter(city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     for i in range(0,len(locs)):
         coordinates = locs[i].coordinates.split(" - ")
@@ -101,14 +101,14 @@ def insertTripRecord(postData):
     end = datetime.datetime.strptime(postData["end"], "%Y-%m-%d %H:%M")
     possibles = ""
     locsdata = []    
-    for loc in Locations.objects.filter(city = postData["city"]):
+    for loc in LocStore.objects.filter(city = postData["city"]):
         timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         if(timepoint!=[]):
             possibles = possibles+str(loc.locid)+","
             if(loc.acttype=="Occurence"):
                 tempprice = str(loc.price).split(", ")
                 if(len(tempprice)==1):
-                    locsdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                    locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 else:
                     minprice = 10000
                     pos = 0
@@ -119,9 +119,9 @@ def insertTripRecord(postData):
                             if(int(tempprice[i])<minprice):
                                 minprice = tempprice[i]
                                 pos = i
-                    locsdata.append([loc.locid,loc.activity,int(tempprice[i]),int(temptime[i]),loc.hashtag,loc.deposit])
+                    locsdata.append([loc.locid,loc.title,int(tempprice[i]),int(temptime[i]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
             else:
-                locsdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
                 
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
@@ -142,7 +142,7 @@ def index(request):
         jsonData = request.body.decode("utf-8")
         postData = json.loads(jsonData)
         if(postData["type"]=="ILP"):
-            locs = Locations.objects.filter(locid__in = postData["places"], city = postData["city"])
+            locs = LocStore.objects.filter(locid__in = postData["places"], city = postData["city"])
             userTrip = Trips.objects.get(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
             start = userTrip.start
             end = userTrip.end
@@ -172,10 +172,9 @@ def index(request):
                         timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[i]))
                 else:
                     timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
-                timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(int(loc.time))
                 locids.append(loc.locid)
-                locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
+                locdata[loc.locid] = [loc.title,loc.book,loc.coordinates,loc.address]
             #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
             locdata["Home"] = [userTrip.homecoordinates]
             homedurations = {}
@@ -266,11 +265,11 @@ def index(request):
                 possibles = userTrip.possibles.split(",")
                 for i in range(0,len(possibles)):
                     possibles[i] = int(possibles[i])
-                for loc in Locations.objects.filter(locid__in = possibles, city = postData["city"]):
+                for loc in LocStore.objects.filter(locid__in = possibles, city = postData["city"]):
                     if(loc.acttype=="Occurence"):
                         tempprice = str(loc.price).split(", ")
                         if(len(tempprice)==1):
-                            locdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                         else:
                             minprice = 10000
                             pos = 0
@@ -281,9 +280,9 @@ def index(request):
                                     if(int(tempprice[i])<minprice):
                                         minprice = tempprice[i]
                                         pos = i
-                            locdata.append([loc.locid,loc.activity,int(tempprice[i]),int(temptime[i]),loc.hashtag,loc.deposit])
+                            locdata.append([loc.locid,loc.title,int(tempprice[i]),int(temptime[i]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                     else:
-                        locdata.append([loc.locid,loc.activity,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                        locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions]})
             elif(userTrip.status>=2):
                 start = userTrip.start
@@ -303,12 +302,12 @@ def index(request):
                             dispTime = dispDate.time().strftime("%I:%M %p")
                             routeDispTimes[i] = routeDispTimes[i]+dispTime+"-"
                     routeDispTimes[i] = routeDispTimes[i]+"Home"
-                locs = Locations.objects.filter(locid__in = places, city = postData["city"])
+                locs = LocStore.objects.filter(locid__in = places, city = postData["city"])
                 locids = []
                 locdata = {}
                 for loc in locs:
                     locids.append(loc.locid)
-                    locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates]
+                    locdata[loc.locid] = [loc.title,loc.book,loc.coordinates,loc.address]
                 #homeLoc = Locations.objects.get(locid = postData["home0"], city = postData["city"])
                 locdata["Home"] = [userTrip.homecoordinates]
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata, "routes": routeArr, "dates": [start, end], "disptimes": routeDispTimes})
@@ -412,7 +411,7 @@ def bookings(request):
                 ind = places.index(booklocids[i])
                 timebooked[ind] = newdates[i]
                 
-            locs = Locations.objects.filter(locid__in = places, city = bookcity)
+            locs = LocStore.objects.filter(locid__in = places, city = bookcity)
             start = userTrip.start
             end = userTrip.end
             start = start.replace(tzinfo=None)
@@ -425,12 +424,29 @@ def bookings(request):
             numduration = triplimit(start,end)
             for loc in locs:
                 if(timebooked[places.index(loc.locid)]=="N/A"):
-                    timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                    for loc in locs:
+                        if(loc.acttype=="Occurence"):
+                            tempprice = str(loc.price).split(", ")
+                            if(len(tempprice)==1):
+                                timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                            else:
+                                minprice = 10000
+                                pos = 0
+                                temptime = str(loc.time).split(", ")
+                                tempdates = loc.hours.split(", ")
+                                for i in range(0,len(tempprice)):
+                                    if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                                        if(int(tempprice[i])<minprice):
+                                            minprice = tempprice[i]
+                                            pos = i
+                                timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[i]))
+                        else:
+                            timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 else:
                     timeplaces.append([dateconversionsimple(start,timebooked[places.index(loc.locid)])])
                 staytimeplaces.append(loc.time)
                 locids.append(loc.locid)
-                locdata[loc.locid] = [loc.activity,loc.book,loc.coordinates] 
+                locdata[loc.locid] = [loc.title,loc.book,loc.coordinates,loc.address] 
             locdata["Home"] = [userTrip.homecoordinates]
             homedurations = {}
             hometemp = userTrip.homedistances.split(";")
@@ -438,7 +454,7 @@ def bookings(request):
                 temp = x.split("-")
                 homedurations[temp[0]] = int(temp[1])
 
-            response = ilp(sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
+            response = ilp(userTrip.city, sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
             for i in range(0,len(response[2])-1):
@@ -461,7 +477,7 @@ def bookings(request):
             userTrip = Trips.objects.get(tripid = x.tripid, city = x.city, fbid = x.fbid)
             startdate = userTrip.start.strftime("%d-%b-%Y %H:%M")
             enddate = userTrip.end.strftime("%d-%b-%Y %H:%M")
-            activity = Locations.objects.get(city = x.city, locid = x.locid)
+            activity = LocStore.objects.get(city = x.city, locid = x.locid)
             routeArr = userTrip.actuals.split(";")
             routeTimes = userTrip.actualstime.split(";")
             for obj in objs:
@@ -480,7 +496,7 @@ def bookings(request):
                     locindex = routeDay.index(str(x.locid))
                     newdate = userTrip.start + datetime.timedelta(minutes=float(routeDayTimes[locindex]))
                     objs[ind]["locidarr"].append(x.locid)
-                    objs[ind]["activityarr"].append(activity.activity)
+                    objs[ind]["activityarr"].append(activity.title)
                     objs[ind]["datearr"].append(newdate.strftime("%d-%b-%Y %H:%M"))
                     objs[ind]["newdatenames"].append("newdate"+str(objs[ind]["bookcount"]))
 
