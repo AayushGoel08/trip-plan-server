@@ -527,6 +527,7 @@ def entries(request):
                 return JsonResponse({"message": "Done"})
 
             elif(postData["type"]=="GetDistances"):
+                key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
                 locs = LocStore.objects.filter(city = postData["city"])
                 for x in locs:
                     for y in locs:
