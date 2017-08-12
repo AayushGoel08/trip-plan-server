@@ -542,8 +542,8 @@ def entries(request):
                             timenum = int(time[0])
                         else:
                             timenum = (int(time[0])*60) + (int(time[2]))
-                        if Distances.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
-                            dist = Distances.get(city=postData["city"],originid=x.locid, destid=y.locid)
+                        if Distances.objects.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
+                            dist = Distances.objects.get(city=postData["city"],originid=x.locid, destid=y.locid)
                             dist.distance = timenum
                             dist.save()
                         else:
