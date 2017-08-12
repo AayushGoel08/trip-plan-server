@@ -508,7 +508,7 @@ def entries(request):
 
             elif(postData["type"]=="GetAllDistances"):
                 dists = Distances.objects.all()
-                userentries = {"records": [[dist.city,dist.originid,dist.destid,dest.distance] for dist in dists]}
+                userentries = {"records": [[dist.city,dist.originid,dist.destid,dist.distance] for dist in dists]}
                 return JsonResponse({"data": userentries})
 
             elif(postData["type"]=="GetAddresses"):
