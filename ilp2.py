@@ -189,6 +189,7 @@ def dateconversion(start, end, acttype,hours):
         for y in datatemp:
                 temp = y.split(" - ")
                 entrytime = temp[1]
+
                 if(len(entrytime.split(":"))==1):
                         entrytime = entrytime + ":00"
                 datesplit = temp[0].split(" ")

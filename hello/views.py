@@ -121,7 +121,7 @@ def insertTripRecord(postData):
                                 pos = i
                     locsdata.append([loc.locid,loc.title,int(tempprice[i]),int(temptime[i]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
             else:
-                locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,loc.deposit])
+                locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
@@ -535,6 +535,11 @@ def entries(request):
             elif(postData["type"]=="GetAllCityData"):
                 locs = LocStore.objects.filter(city = postData["city"])
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
+                return JsonResponse({"data": userentries})
+
+            elif(postData["type"]=="GetAllCityTypeData"):
+                locs = LocStore.objects.filter(city = postData["city"], acttype=postData["acttype"])
+                userentries = {"records": [[loc.city,loc.locid,loc.acttype,loc.hours] for loc in locs]}
                 return JsonResponse({"data": userentries})
 
             elif(postData["type"]=="GetAllDistances"):
