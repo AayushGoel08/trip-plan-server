@@ -532,7 +532,7 @@ def entries(request):
                     for y in locs:
                         origincoord = x.coordinates.split(" - ")
                         destcoord = y.coordinates.split(" - ")
-                        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origincoord[0]+","+origincoord[1]+"&destinations="+descoord[0]+","+destcoord[1]+"&mode=walking&key="+key
+                        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origincoord[0]+","+origincoord[1]+"&destinations="+destcoord[0]+","+destcoord[1]+"&mode=walking&key="+key
                         data = requests.get(string).json()
                         time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
                         timenum = 0
