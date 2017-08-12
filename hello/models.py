@@ -61,3 +61,9 @@ class LocStore(models.Model):
     website = models.CharField(max_length=300)
     address = models.CharField(max_length=200)
     coordinates = models.CharField(max_length=200)
+
+class Distances(models.Model):
+    city = models.CharField(max_length=100)
+    originid = models.IntegerField()
+    destid = models.IntegerField()
+    distance = models.IntegerField()

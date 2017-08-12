@@ -8,6 +8,7 @@ from .models import Trips
 from .models import Locations
 from .models import Bookings
 from .models import LocStore
+from .models import Distances
 
 import json
 import datetime
@@ -505,6 +506,47 @@ def entries(request):
                 locs = LocStore.objects.all()
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
                 return JsonResponse({"data": userentries})
+
+            elif(postData["type"]=="GetAllDistances"):
+                dists = Distances.objects.all()
+                userentries = {"records": [[dist.city,dist.originid,dist.destid,dest.distance] for dist in dists]}
+                return JsonResponse({"data": userentries})
+
+            elif(postData["type"]=="GetAddresses"):
+                locs = LocStore.objects.filter(city = postData["city"])
+                key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+                url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+                for loc in locs:     
+                    string = url + loc.name + " "+ postData["city"] + "&key=" +key
+                    data = requests.get(string).json()
+                    lat = data['results'][0]['geometry']['location']['lat']
+                    lng = data['results'][0]['geometry']['location']['lng']
+                    address = data['results'][0]['formatted_address']
+                    loc.address = address
+                    loc.coordinates = lat + " - " + lng
+                    loc.save()
+                for x in locs:
+                    for y in locs:
+                        origincoord = x.coordinates.split(" - ")
+                        destcoord = y.coordinates.split(" - ")
+                        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origincoord[0]+","+origincoord[1]+"&destinations="+descoord[0]+","+destcoord[1]+"&mode=walking&key="+key
+                        data = requests.get(string).json()
+                        time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
+                        timenum = 0
+                        #Below code assumes x hours y minutes data format
+                        if(len(time)==2):
+                            timenum = int(time[0])
+                        else:
+                            timenum = (int(time[0])*60) + (int(time[2]))
+                        if Distances.filter(city=postData["city"],originid=x.locid, destid=y.locid).exists():
+                            dist = Distances.get(city=postData["city"],originid=x.locid, destid=y.locid)
+                            dist.distance = timenum
+                            dist.save()
+                        else:
+                            dist = Distances(None,postData["city"],x.locid, y.locid,timenum)
+                            dist.save()
+                return JsonResponse({"message": "Done"})
+                                
         except:
             city = request.POST.get("city", "")
             locid = LocStore.objects.filter(city = request.POST.get("city","")).count()+1
