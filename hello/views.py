@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.conf import settings
 
-from .models import Greeting
 from .models import Trips
 from .models import Locations
 from .models import Bookings
@@ -487,7 +486,7 @@ def bookings(request):
 
 def entries(request):
     if(request.method=='POST'):
-        try:
+        #try:
             jsonData = request.body.decode("utf-8")
             postData = json.loads(jsonData)
             if(postData["type"]=="Count"):
@@ -547,36 +546,36 @@ def entries(request):
                 #            dist.save()
                 return JsonResponse({"message": "Done"})
                                 
-        except:
-            city = request.POST.get("city", "")
-            locid = LocStore.objects.filter(city = request.POST.get("city","")).count()+1
-            name = request.POST.get("name", "")
-            title = request.POST.get("title", "")
-            hashtag = request.POST.get("hashtag", "")
-            description = request.POST.get("description", "")
-            imagelink = request.POST.get("image", "")
-            time = request.POST.get("time", "")
-            rating = request.POST.get("rating", "")
-            price = request.POST.get("price", "")
-            prebook = request.POST.get("prebook", "")
-            deposit = "0"
-            if(request.POST.get("deposit","")!=""):
-                deposit = request.POST.get("deposit","")
-            acttype = request.POST.get("type", "")
-            hours = "-"
-            if(acttype!="Unrestricted"):
-                hours = request.POST.get("timings", "")
-            provider = "-"
-            if(request.POST.get("provider","")!=""):
-                provider = request.POST.get("provider","")
-            website = "-"
-            if(request.POST.get("website","")!=""):
-                website = request.POST.get("website","")
-            address = "-"
-            coordinates = "-"
-            loc = LocStore(None,city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
-            loc.save()
-            return render(request, 'entries.html')
+        #except:
+        #    city = request.POST.get("city", "")
+        #    locid = LocStore.objects.filter(city = request.POST.get("city","")).count()+1
+        #    name = request.POST.get("name", "")
+        #    title = request.POST.get("title", "")
+        #    hashtag = request.POST.get("hashtag", "")
+        #    description = request.POST.get("description", "")
+        #    imagelink = request.POST.get("image", "")
+        #    time = request.POST.get("time", "")
+        #    rating = request.POST.get("rating", "")
+        #    price = request.POST.get("price", "")
+        #    prebook = request.POST.get("prebook", "")
+        #    deposit = "0"
+        #    if(request.POST.get("deposit","")!=""):
+        #        deposit = request.POST.get("deposit","")
+        #    acttype = request.POST.get("type", "")
+        #    hours = "-"
+        #    if(acttype!="Unrestricted"):
+        #        hours = request.POST.get("timings", "")
+        #    provider = "-"
+        #    if(request.POST.get("provider","")!=""):
+        #        provider = request.POST.get("provider","")
+        #    website = "-"
+        #    if(request.POST.get("website","")!=""):
+        #        website = request.POST.get("website","")
+        #    address = "-"
+        #    coordinates = "-"
+        #    loc = LocStore(None,city,locid,name,title,hashtag,description,imagelink,time,rating,price,prebook,deposit,acttype,hours,provider,website,address,coordinates)
+        #    loc.save()
+        #    return render(request, 'entries.html')
     else:
         return render(request, 'entries.html')
 
