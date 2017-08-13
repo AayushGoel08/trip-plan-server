@@ -20,6 +20,7 @@ class Trips(models.Model):
     group = models.IntegerField()
     selections = models.CharField(max_length=500, blank=True)
     traversions = models.CharField(max_length=500, blank=True)
+    email = models.CharField(max_length=200)
     
 
 class Locations(models.Model):

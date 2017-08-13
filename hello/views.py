@@ -119,7 +119,7 @@ def insertTripRecord(postData):
                 locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","")
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","",postData["email"])
     userTrip.save()
     return [locsdata,tripid]
     
@@ -227,7 +227,7 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions] for entry in usertrips]}
+            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions, entry.email] for entry in usertrips]}
             return JsonResponse({"data": userentries})
 
         elif(postData["type"]=="GetHomeData"):
