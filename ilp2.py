@@ -383,7 +383,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
             
 
     for i in range(0,numdays-1):
-        #prob += starttimevars[len(places)+i] >= starttimehomes[i], "Start Time for Homes "+str(i)
+        prob += starttimevars[len(places)+i] <= starttimehomes[i], "Start Time for Homes "+str(i)
         prob += endtimevars[len(places)+i] >= endtimehomes[i], "End Time for Homes "+str(i)
 
     #prob.writeLP("RoutingModel.lp")
