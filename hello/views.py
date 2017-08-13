@@ -507,7 +507,7 @@ def bookings(request):
 
 def entries(request):
     if(request.method=='POST'):
-        #try:
+        try:
             jsonData = request.body.decode("utf-8")
             postData = json.loads(jsonData)
             if(postData["type"]=="Count"):
@@ -590,7 +590,7 @@ def entries(request):
                             dist.save()
                 return JsonResponse({"message": "Done"})
                                 
-        #except:
+        except:
             city = request.POST.get("city", "")
             locid = LocStore.objects.filter(city = request.POST.get("city","")).count()+1
             name = request.POST.get("name", "")
