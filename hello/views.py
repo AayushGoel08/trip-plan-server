@@ -199,7 +199,10 @@ def index(request):
             userTrip.actualstime = routeSaveTimes
             userTrip.status = 2
             userTrip.save()
-            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end], "disptimes": routeDispTimes})
+            timedata = []
+            for i in range(0,len(response[0])):
+                timedata.push(str(response[0][i])+"-"+str(response[4][i]))
+            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end], "disptimes": routeDispTimes, "intervals": timedata})
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})

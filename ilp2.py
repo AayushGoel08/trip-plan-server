@@ -274,7 +274,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
         binvars.append(LpVariable("Bin"+str(i),0,1, LpInteger))
 
 
-    objvar = duration - endtimevars[len(endtimevars)-1]
+    objvar = endtimevars[len(endtimevars)-1]
 
     traveltime = []    
 
@@ -391,7 +391,8 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
     if(LpStatus[prob.status]=="Optimal"):
         #print("Time = ", value(prob.objective))
         times = [value(x) for x in starttimevars]
+        endtimes = [value(x) for x in endtimevars]
         routeString = makeroute(numdays, places,times,staytimeplaces)
-        return [times,"Solution Found", routeString[0],routeString[1]]
+        return [times,"Solution Found", routeString[0],routeString[1],endtimes]
     else:
         return [[],"Solution not found"]
