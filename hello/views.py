@@ -23,17 +23,12 @@ def getPlaces(routeArr):
                 places.append(int(x))
     return places
 
-def gethomedistances(userTrip, lat, lng):
+def gethomedistances(userTrip, name):
     distances = []
     locs = LocStore.objects.filter(city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     for i in range(0,len(locs)):
-        coordinates = locs[i].coordinates.split(" - ")
-        latdest = coordinates[0]
-        lngdest = coordinates[1]
-
-        
-        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+str(lat)+","+str(lng)+"&destinations="+latdest+","+lngdest+"&mode=walking&key="+key
+        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+name+"&destinations="+locs[i].address+"&mode=walking&key="+key
         data = requests.get(string).json()
         time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
         timenum = 0
@@ -76,7 +71,7 @@ def savehomename(postData):
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
     userTrip.status = 1
     userTrip.save()
-    gethomedistances(userTrip, postData["lat"], postData["lng"])
+    gethomedistances(userTrip, postData["name"])
     return "Home location saved"
 
 def gethomedata(postData):
