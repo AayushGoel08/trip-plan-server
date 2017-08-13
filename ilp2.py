@@ -274,7 +274,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
         binvars.append(LpVariable("Bin"+str(i),0,1, LpInteger))
 
 
-    objvar = endtimevars[len(endtimevars)-1]
+    objvar = duration - endtimevars[len(endtimevars)-1]
 
     traveltime = []    
 
