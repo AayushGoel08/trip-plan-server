@@ -53,7 +53,7 @@ def gethomeforedit(postData):
 
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     url = "https://maps.googleapis.com/maps/api/geocode/json?address="
-    url = url + userTrip.homename + " "+ usertrip.city + "&key=" +key
+    url = url + userTrip.homename + "&key=" +key
 
     data = requests.get(url).json()
     lat = data['results'][0]['geometry']['location']['lat']
@@ -63,7 +63,7 @@ def gethomeforedit(postData):
     s = []
     s.append(', '.join(temp[:n]))
     s.append(', '.join(temp[n:]))
-    return [s[0],s[1],lat,lng,userTrip.homename + " "+ usertrip.city]
+    return [s[0],s[1],lat,lng,userTrip.homename]
 
 def sendhomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
