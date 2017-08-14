@@ -48,6 +48,23 @@ def gethomename(postData):
     temp = data.text.split('<th class="hotel_name" colspan="2">')[1].split('<span class="nowrap pb-conf-rating">')[0].strip()
     return temp
 
+def gethomeforedit(postData):
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+
+    key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+    url = url + userTrip.homename + " "+ usertrip.city + "&key=" +key
+
+    data = requests.get(url).json()
+    lat = data['results'][0]['geometry']['location']['lat']
+    lng = data['results'][0]['geometry']['location']['lng']
+    temp = data['results'][0]['formatted_address'].split(", ")
+    n = len(temp)-2
+    s = []
+    s.append(', '.join(temp[:n]))
+    s.append(', '.join(temp[n:]))
+    return [s[0],s[1],lat,lng,userTrip.homename + " "+ usertrip.city]
+
 def sendhomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
     userTrip.homename = postData["name"]
@@ -229,6 +246,9 @@ def index(request):
             usertrips = Trips.objects.all()
             userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions, entry.email] for entry in usertrips]}
             return JsonResponse({"data": userentries})
+
+        elif(postData["type"]=="GetHomeForEdit"):
+            return JsonResponse({"data": gethomeforedit(postData)})
 
         elif(postData["type"]=="GetHomeData"):
             return JsonResponse({"data": gethomedata(postData)})
