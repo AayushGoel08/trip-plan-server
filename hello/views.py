@@ -68,24 +68,24 @@ def gethomeforedit(postData):
     possibles = userTrip.possibles.split(",")
     for i in range(0,len(possibles)):
         possibles[i] = int(possibles[i])
-        for loc in LocStore.objects.filter(locid__in = possibles, city = postData["city"]):
-            if(loc.acttype=="Occurence"):
-                tempprice = str(loc.price).split(", ")
-                if(len(tempprice)==1):
-                    locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
-                else:
-                    minprice = 10000
-                    pos = 0
-                    temptime = str(loc.time).split(", ")
-                    tempdates = loc.hours.split(", ")
-                    for i in range(0,len(tempprice)):
-                        if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
-                            if(int(tempprice[i])<minprice):
-                                minprice = tempprice[i]
-                                pos = i
-                    locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
-            else:
+    for loc in LocStore.objects.filter(locid__in = possibles, city = postData["city"]):
+        if(loc.acttype=="Occurence"):
+            tempprice = str(loc.price).split(", ")
+            if(len(tempprice)==1):
                 locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+            else:
+                minprice = 10000
+                pos = 0
+                temptime = str(loc.time).split(", ")
+                tempdates = loc.hours.split(", ")
+                for i in range(0,len(tempprice)):
+                    if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                        if(int(tempprice[i])<minprice):
+                            minprice = tempprice[i]
+                            pos = i
+                locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+        else:
+            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
     return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,userTrip.homename]}
     
 
