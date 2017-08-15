@@ -273,7 +273,7 @@ def index(request):
 
         elif(postData["type"]=="GetHomeForEdit"):
             data = gethomeforedit(postData)
-            return {"status": data["status"], "locsdata": data["locdata"], "swiperstate": data["swiperstate"], "homedata": data["homedata"]}
+            return {"status": data["status"], "locsdata": data["locsdata"], "swiperstate": data["swiperstate"], "homedata": data["homedata"]}
 
         elif(postData["type"]=="GetHomeData"):
             return JsonResponse({"data": gethomedata(postData)})
