@@ -319,6 +319,11 @@ def index(request):
         elif(postData["type"]=="GetPaymentLink"):
             return JsonResponse({"url": getpaymentlink(postData)})
 
+        elif(postData["type"]=="UpdatePaidStatus"):
+            userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+            userTrip.status = 5
+            return JsonResponse({"data": "Updates performed"})
+
         elif(postData["type"]=="UpdateSelections"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             userTrip.selections = "-".join(str(x) for x in postData["selections"])
