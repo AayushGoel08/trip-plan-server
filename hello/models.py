@@ -21,6 +21,7 @@ class Trips(models.Model):
     selections = models.CharField(max_length=500, blank=True)
     traversions = models.CharField(max_length=500, blank=True)
     email = models.CharField(max_length=200)
+    paysum = models.CharField(max_length=200)
     
 
 class Locations(models.Model):
@@ -36,6 +37,7 @@ class Locations(models.Model):
     coordinates = models.CharField(max_length=200)
     hashtag = models.CharField(max_length=200)
     deposit = models.CharField(max_length=500)
+    
 
 class Bookings(models.Model):
     fbid = models.CharField(max_length=100)
@@ -62,6 +64,7 @@ class LocStore(models.Model):
     website = models.CharField(max_length=300)
     address = models.CharField(max_length=200)
     coordinates = models.CharField(max_length=200)
+    
 
 class Distances(models.Model):
     city = models.CharField(max_length=100)

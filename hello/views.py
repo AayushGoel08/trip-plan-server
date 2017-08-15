@@ -162,7 +162,7 @@ def insertTripRecord(postData):
                 locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                 
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","",postData["email"])
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","",postData["email"],"")
     userTrip.save()
     return [locsdata,tripid]
     
@@ -182,6 +182,7 @@ def index(request):
         if(postData["type"]=="ILP"):
             locs = LocStore.objects.filter(locid__in = postData["places"], city = postData["city"])
             userTrip = Trips.objects.get(tripid = postData["tripid"], city = postData["city"], fbid = postData["fbid"])
+            userTrip.paysum = postData["deposit"]
             start = userTrip.start
             end = userTrip.end
             start = start.replace(tzinfo=None)
