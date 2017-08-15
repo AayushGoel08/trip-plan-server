@@ -11,8 +11,34 @@ from .models import Distances
 
 import json
 import datetime
+import hashlib
+import random
 import requests
 from ilp2 import *
+
+
+def getpaymentlink(postData):
+    url = "https://secure.payu.in/_payment"
+
+    amount = postData["amount"]
+    randomnum = random.randint(1,10000000)
+
+    txnid = "A-"+str(randomnum)
+    productinfo = "Trial Payment"
+    firstname = "Aayush"
+    key = "V4FnEbRu"
+    email = "axgoel8@gmail.com"
+    phone = "9910513133"
+    surl = "https://trip-plan-router.herokuapp.com"
+    furl = "https://trip-plan-router.herokuapp.com/bookings"    
+    service_provider = "payu_paisa"
+    salt = "LZsDglQTXL"
+    string = key+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|||||||||||"+salt
+    string = string.encode("UTF-8")
+    hashstring = hashlib.sha512(bytes(string)).hexdigest()
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    data = requests.post(url, headers= headers, data={"amount": amount, "txnid": txnid, "productinfo": productinfo, "firstname": firstname, "key": key, "email": email, "phone": phone, "surl": surl, "furl": furl, "service_provider": service_provider, "hash": hashstring})
+    return data.url
 
 def getPlaces(routeArr):
     places = []
@@ -289,6 +315,9 @@ def index(request):
 
         elif(postData["type"]=="SaveHomeName"):
             return JsonResponse({"data": savehomename(postData)})
+
+        elif(postData["type"]=="GetPaymentLink"):
+            return JsonResponse({"data": getpaymentlink(postData)})
 
         elif(postData["type"]=="UpdateSelections"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
