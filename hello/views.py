@@ -63,7 +63,31 @@ def gethomeforedit(postData):
     s = []
     s.append(', '.join(temp[:n]))
     s.append(', '.join(temp[n:]))
-    return [s[0],s[1],lat,lng,userTrip.homename]
+
+    locdata = []
+    possibles = userTrip.possibles.split(",")
+    for i in range(0,len(possibles)):
+        possibles[i] = int(possibles[i])
+        for loc in LocStore.objects.filter(locid__in = possibles, city = postData["city"]):
+            if(loc.acttype=="Occurence"):
+                tempprice = str(loc.price).split(", ")
+                if(len(tempprice)==1):
+                    locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                else:
+                    minprice = 10000
+                    pos = 0
+                    temptime = str(loc.time).split(", ")
+                    tempdates = loc.hours.split(", ")
+                    for i in range(0,len(tempprice)):
+                        if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                            if(int(tempprice[i])<minprice):
+                                minprice = tempprice[i]
+                                pos = i
+                    locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+            else:
+                locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+    return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,userTrip.homename]}
+    
 
 def sendhomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
@@ -131,7 +155,7 @@ def insertTripRecord(postData):
                             if(int(tempprice[i])<minprice):
                                 minprice = tempprice[i]
                                 pos = i
-                    locsdata.append([loc.locid,loc.title,int(tempprice[i]),int(temptime[i]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                    locsdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
             else:
                 locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 
@@ -181,7 +205,7 @@ def index(request):
                                 if(int(tempprice[i])<minprice):
                                     minprice = tempprice[i]
                                     pos = i
-                        timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[i]))
+                        timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[pos]))
                 else:
                     timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 staytimeplaces.append(int(loc.time))
@@ -248,7 +272,8 @@ def index(request):
             return JsonResponse({"data": userentries})
 
         elif(postData["type"]=="GetHomeForEdit"):
-            return JsonResponse({"data": gethomeforedit(postData)})
+            data = gethomeforedit(postData)
+            return {"status": data["status"], "locsdata": data["locdata"], "swiperstate": data["swiperstate"], "homedata": data["homedata"]}
 
         elif(postData["type"]=="GetHomeData"):
             return JsonResponse({"data": gethomedata(postData)})
@@ -298,7 +323,7 @@ def index(request):
                                     if(int(tempprice[i])<minprice):
                                         minprice = tempprice[i]
                                         pos = i
-                            locdata.append([loc.locid,loc.title,int(tempprice[i]),int(temptime[i]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                            locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                     else:
                         locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions]})
@@ -457,7 +482,7 @@ def bookings(request):
                                         if(int(tempprice[i])<minprice):
                                             minprice = tempprice[i]
                                             pos = i
-                                timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[i]))
+                                timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[pos]))
                         else:
                             timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 else:
