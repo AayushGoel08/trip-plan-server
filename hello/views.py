@@ -270,7 +270,7 @@ def index(request):
                             routeCloseTimes[i] = routeCloseTimes[i]+closetime+"-"
                         else:
                             routeCloseTimes[i] = routeCloseTimes[i]+"N/A"+"-"
-                    routeCloseTimes[i] = routeCloseTimes[i]+closetime+"Home"
+                routeCloseTimes[i] = routeCloseTimes[i]+"Home"
                         
                 for x in tempStr:
                     if(x!="Home"):
@@ -410,7 +410,7 @@ def index(request):
                                 routeCloseTimes[i] = routeCloseTimes[i]+closetime+"-"
                             else:
                                 routeCloseTimes[i] = routeCloseTimes[i]+"N/A"+"-"
-                        routeCloseTimes[i] = routeCloseTimes[i]+closetime+"Home"
+                    routeCloseTimes[i] = routeCloseTimes[i]+"Home"
                 
                 for i in range(0,len(routeTimes)):
                     routeDispTimes.append("Home-")
