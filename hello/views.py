@@ -322,6 +322,7 @@ def index(request):
         elif(postData["type"]=="UpdatePaidStatus"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             userTrip.status = 5
+            userTrip.save()
             return JsonResponse({"data": "Updates performed"})
 
         elif(postData["type"]=="UpdateSelections"):
