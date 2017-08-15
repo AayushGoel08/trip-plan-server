@@ -64,6 +64,8 @@ def gethomeforedit(postData):
     s.append(', '.join(temp[:n]))
     s.append(', '.join(temp[n:]))
 
+    homename = userTrip.homename.replace(" "+userTrip.city,"")
+    
     locdata = []
     possibles = userTrip.possibles.split(",")
     for i in range(0,len(possibles)):
@@ -86,7 +88,7 @@ def gethomeforedit(postData):
                 locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
         else:
             locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
-    return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,userTrip.homename]}
+    return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,homename]}
     
 
 def sendhomename(postData):
