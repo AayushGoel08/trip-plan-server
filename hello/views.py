@@ -74,7 +74,7 @@ def gethomeforedit(postData):
         if(loc.acttype=="Occurence"):
             tempprice = str(loc.price).split(", ")
             if(len(tempprice)==1):
-                locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
             else:
                 minprice = 10000
                 pos = 0
@@ -85,9 +85,9 @@ def gethomeforedit(postData):
                         if(int(tempprice[i])<minprice):
                             minprice = tempprice[i]
                             pos = i
-                locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
         else:
-            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
     return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,homename]}
     
 
@@ -146,7 +146,7 @@ def insertTripRecord(postData):
             if(loc.acttype=="Occurence"):
                 tempprice = str(loc.price).split(", ")
                 if(len(tempprice)==1):
-                    locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                    locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                 else:
                     minprice = 10000
                     pos = 0
@@ -157,9 +157,9 @@ def insertTripRecord(postData):
                             if(int(tempprice[i])<minprice):
                                 minprice = tempprice[i]
                                 pos = i
-                    locsdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                    locsdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
             else:
-                locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                 
     possibles = possibles[:-1]
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","",postData["email"])
@@ -314,7 +314,7 @@ def index(request):
                     if(loc.acttype=="Occurence"):
                         tempprice = str(loc.price).split(", ")
                         if(len(tempprice)==1):
-                            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                         else:
                             minprice = 10000
                             pos = 0
@@ -325,9 +325,9 @@ def index(request):
                                     if(int(tempprice[i])<minprice):
                                         minprice = tempprice[i]
                                         pos = i
-                            locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                            locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                     else:
-                        locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address])
+                        locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
                 return JsonResponse({"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions]})
             elif(userTrip.status>=2):
                 start = userTrip.start
