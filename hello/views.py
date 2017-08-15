@@ -317,7 +317,7 @@ def index(request):
             return JsonResponse({"data": savehomename(postData)})
 
         elif(postData["type"]=="GetPaymentLink"):
-            return JsonResponse({"data": getpaymentlink(postData)})
+            return JsonResponse({"url": getpaymentlink(postData)})
 
         elif(postData["type"]=="UpdateSelections"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
