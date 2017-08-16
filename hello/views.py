@@ -8,6 +8,7 @@ from .models import Locations
 from .models import Bookings
 from .models import LocStore
 from .models import Distances
+from .models import Cities
 
 import json
 import datetime
@@ -15,6 +16,21 @@ import hashlib
 import random
 import requests
 from ilp2 import *
+
+def getbookinglink(postData):
+    cityid = Cities.objects.get(city=postData["city"]).cityid
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+    url = "https://www.booking.com/searchresults.html?city="+cityid+"&nflt=ht_id%253D203&aid=1320294"
+    startday = userTrip.start.date().strftime("%d")
+    startmonth = userTrip.start.date().strftime("%m")
+    startyear = userTrip.start.date().strftime("%Y")
+
+    endday = userTrip.end.date().strftime("%d")
+    endmonth = userTrip.end.date().strftime("%m")
+    endyear = userTrip.end.date().strftime("%Y")
+    
+    url = url+"&checkin_monthday="+startday+"&checkin_month="+startmonth+"&checkin_year="+startyear+"&checkout_monthday="+endday+"&checkout_month="+endmonth+"&checkout_year="+endyear+"&selected_currency=EUR"
+    return url
 
 
 def getpaymentlink(postData):
@@ -191,7 +207,10 @@ def insertTripRecord(postData):
     userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","",postData["email"],"")
     userTrip.save()
     return [locsdata,tripid]
-    
+
+def insertCityRecord(postData):
+    loc = Cities(None,postData["city"],postData["cityid"])
+    loc.save()
     
 def insertLocationRecord(postData):
     loc = Locations(None,postData["city"],postData["locid"],postData["activity"],postData["address"],postData["price"],postData["acttype"],postData["hours"],postData["time"],postData["book"], postData["coordinates"])
@@ -304,6 +323,10 @@ def index(request):
             locsdata = insertTripRecord(postData)
             return JsonResponse({"locsdata": locsdata[0], "tripid": locsdata[1]})
 
+        elif(postData["type"]=="InsertCity"):
+            insertCityRecord(postData)
+            return JsonResponse({"message": "Inserted city"})
+
         elif(postData["type"]=="DeleteAll"):
             Trips.objects.all().delete()
             return JsonResponse({"data": Trips.objects.count()})
@@ -336,6 +359,9 @@ def index(request):
 
         elif(postData["type"]=="GetPaymentLink"):
             return JsonResponse({"url": getpaymentlink(postData)})
+
+        elif(postData["type"]=="GetBookingLink"):
+            return JsonResponse({"url": getbookinglink(postData)})
 
         elif(postData["type"]=="UpdatePaidStatus"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
