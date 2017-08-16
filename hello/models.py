@@ -71,3 +71,7 @@ class Distances(models.Model):
     originid = models.IntegerField()
     destid = models.IntegerField()
     distance = models.IntegerField()
+
+class Cities(models.Model):
+    city = models.CharField(max_length=100)
+    cityid = models.CharField(max_length=100)
