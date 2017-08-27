@@ -9,6 +9,7 @@ from .models import Bookings
 from .models import LocStore
 from .models import Distances
 from .models import Cities
+from django.db.models import Count
 
 import json
 import datetime
@@ -686,6 +687,11 @@ def entries(request):
                 locs = LocStore.objects.filter(city = postData["city"])
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
                 return JsonResponse({"data": userentries})
+
+            elif(postData["type"]=="GetAllHashtagData"):
+                locs = LocStore.objects.filter(city = postData["city"])
+                data = locs.values('hashtag').annotate(dcount=Count('hashtag'))
+                return JsonResponse({"data": data})
 
             elif(postData["type"]=="GetAllCityTypeData"):
                 locs = LocStore.objects.filter(city = postData["city"], acttype=postData["acttype"])
