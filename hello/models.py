@@ -22,6 +22,7 @@ class Trips(models.Model):
     traversions = models.CharField(max_length=500, blank=True)
     email = models.CharField(max_length=200)
     paysum = models.CharField(max_length=200)
+    phone = models.CharField(max_length=200)
     
 
 class Locations(models.Model):
