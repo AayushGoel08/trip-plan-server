@@ -117,7 +117,7 @@ def gethomeforedit(postData):
         if(loc.acttype=="Occurence"):
             tempprice = str(loc.price).split(", ")
             if(len(tempprice)==1):
-                locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
+                locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book,loc.rating])
             else:
                 minprice = 10000
                 pos = 0
@@ -128,9 +128,9 @@ def gethomeforedit(postData):
                         if(int(tempprice[i])<minprice):
                             minprice = tempprice[i]
                             pos = i
-                locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
+                locdata.append([loc.locid,loc.title,int(tempprice[pos]),int(temptime[pos]),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book,loc.rating])
         else:
-            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book])
+            locdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book,loc.rating])
     return {"status": userTrip.status, "locsdata": locdata, "swiperstate": [userTrip.selections, userTrip.traversions], "homedata": [s[0],s[1],lat,lng,homename]}
     
 
