@@ -36,25 +36,25 @@ def getbookinglink(postData):
 
 def getpaymentlink(postData):
     url = "https://secure.payu.in/_payment"
-
-    amount = postData["amount"]
+    userTrip = Trips.objects.get(tripid = int(postData["tripid"]), city = postData["city"], fbid = postData["fbid"])
+    amount = float(postData["amount"])*80
     randomnum = random.randint(1,10000000)
 
     txnid = "A-"+str(randomnum)
     productinfo = "Trial Payment"
     firstname = "Aayush"
     key = "V4FnEbRu"
-    email = "axgoel8@gmail.com"
-    phone = "9910513133"
+    email = userTrip.email
+    phone = userTrip.phone
     surl = "https://trip-plan-router.herokuapp.com"
     furl = "https://trip-plan-router.herokuapp.com/bookings"    
     service_provider = "payu_paisa"
     salt = "LZsDglQTXL"
-    string = key+"|"+txnid+"|"+amount+"|"+productinfo+"|"+firstname+"|"+email+"|||||||||||"+salt
+    string = key+"|"+txnid+"|"+str(amount)+"|"+productinfo+"|"+firstname+"|"+email+"|||||||||||"+salt
     string = string.encode("UTF-8")
     hashstring = hashlib.sha512(bytes(string)).hexdigest()
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    data = requests.post(url, headers= headers, data={"amount": amount, "txnid": txnid, "productinfo": productinfo, "firstname": firstname, "key": key, "email": email, "phone": phone, "surl": surl, "furl": furl, "service_provider": service_provider, "hash": hashstring})
+    data = requests.post(url, headers= headers, data={"amount": str(amount), "txnid": txnid, "productinfo": productinfo, "firstname": firstname, "key": key, "email": email, "phone": phone, "surl": surl, "furl": furl, "service_provider": service_provider, "hash": hashstring})
     return data.url
 
 def getPlaces(routeArr):
@@ -526,6 +526,8 @@ def bookings(request):
                         datasend["locid"] = int(x)
                         insertBookingRecord(datasend)
                     userTrip.status = 3
+                    userTrip.email = postData["email"]
+                    userTrip.phone = postData["phone"]
                     userTrip.save()
                     return JsonResponse({"status": 3, "message": "Booking request confirmed"})
             
