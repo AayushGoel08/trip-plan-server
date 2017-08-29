@@ -37,7 +37,7 @@ def computestandarddev(arr):
 def getstandarddev(numdays,places,starttimevars):
     coll = []
     for i in range(0,len(places)):
-        ind = starttimevars[i]/1440
+        ind = value(starttimevars[i])/1440
         coll.append(ind)
     sd = computestandarddev(coll)
     return sd
