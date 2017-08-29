@@ -28,10 +28,7 @@ def makeroute(numdays,places,times,staytimeplaces):
 def computestandarddev(arr):
     num = len(arr)
     mean = lpSum(arr)*(1/num)
-    differences = [x - mean for x in arr]
-    sq_differences = [d ** 2 for d in differences]
-    ssd = lpSum(sq_differences)
-    return ssd
+    return mean
 
 def getstandarddev(numdays,places,starttimevars):
     coll = []
@@ -289,7 +286,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
     for i in range(0,numbins):
         binvars.append(LpVariable("Bin"+str(i),0,1, LpInteger))
 	
-    objvar = getstandarddev(numdays,places,starttimevars)
+    objvar = (numdays/2) - getstandarddev(numdays,places,starttimevars)
 
     traveltime = []    
 
@@ -339,6 +336,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
     prob += objvar, "Minimize travel time"
 
     prob += endtimevars[len(endtimevars)-1] <= duration, "Time limit constraint"
+    prob += objvar <= numdays/2, "Average constraint"
     for i in range(0,len(endtimevars)):
         if(i in range(0, len(places))):
            prob += endtimevars[i] - starttimevars[i] >= staytimeplaces[i], "Stay at place greater than required "+str(i)
