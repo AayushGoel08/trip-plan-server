@@ -226,7 +226,7 @@ def insertTripRecord(postData):
     return [locsdata,tripid]
 
 def insertCityRecord(postData):
-    loc = Cities(None,postData["city"],postData["cityid"],postdata["address"])
+    loc = Cities(None,postData["city"],postData["cityid"],postData["address"])
     loc.save()
     
 def insertLocationRecord(postData):
