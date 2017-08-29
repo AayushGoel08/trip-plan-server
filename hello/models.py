@@ -76,3 +76,4 @@ class Distances(models.Model):
 class Cities(models.Model):
     city = models.CharField(max_length=100)
     cityid = models.CharField(max_length=100)
+    defaulthome = models.CharField(max_length=500)
