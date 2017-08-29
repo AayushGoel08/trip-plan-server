@@ -16,7 +16,7 @@ import datetime
 import hashlib
 import random
 import requests
-from ilp2 import *
+from ilp3 import *
 
 def getbookinglink(postData):
     cityid = Cities.objects.get(city=postData["city"]).cityid
