@@ -151,6 +151,21 @@ def sendhomename(postData):
     gethomedistances(userTrip, lat, lng)
     return "Home location booked and saved"
 
+def savedefaulthomename(postData):
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+    key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+    url = url + userTrip.homename +"&key=" +key
+
+    data = requests.get(url).json()
+    lat = data['results'][0]['geometry']['location']['lat']
+    lng = data['results'][0]['geometry']['location']['lng']
+    userTrip.status = 1
+    userTrip.homecoordinates = str(lat)+ " - " + str(lng)
+    userTrip.save()
+    gethomedistances(userTrip, userTrip.homename)
+    return "Default Home location saved"
+
 def savehomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
     userTrip.homename = postData["name"]
@@ -205,12 +220,13 @@ def insertTripRecord(postData):
                 locsdata.append([loc.locid,loc.title,int(loc.price),int(loc.time),loc.hashtag,int(loc.deposit),loc.description,loc.imagelink,loc.address,loc.book,loc.rating])
                 
     possibles = possibles[:-1]
-    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","","","","", int(postData["group"]),"","","","","")
+    city = Cities.objects.get(city = postData["city"])
+    userTrip = Trips(None,postData["fbid"],int(tripid),postData["city"],postData["start"],postData["end"],0,possibles,"","",city.defaulthome,"","", int(postData["group"]),"","","","","")
     userTrip.save()
     return [locsdata,tripid]
 
 def insertCityRecord(postData):
-    loc = Cities(None,postData["city"],postData["cityid"])
+    loc = Cities(None,postData["city"],postData["cityid"],postdata["address"])
     loc.save()
     
 def insertLocationRecord(postData):
@@ -328,6 +344,20 @@ def index(request):
             insertCityRecord(postData)
             return JsonResponse({"message": "Inserted city"})
 
+        elif(postData["type"]=="GetAllCityData"):
+            cities = Cities.objects.all()
+            userentries = {"records": [[entry.city,entry.cityid,entry.defaulthome] for entry in cities]}
+            return JsonResponse({"data": userentries})
+
+        elif(postData["type"]=="DeleteAllCity"):
+            Cities.objects.all().delete()
+            return JsonResponse({"data": Cities.objects.count()})
+
+        elif(postData["type"]=="DeleteCity"):
+            city = Cities.objects.get(city = postData["city"])
+            city.delete()
+            return JsonResponse({"data": Cities.objects.count()})
+
         elif(postData["type"]=="DeleteAll"):
             Trips.objects.all().delete()
             return JsonResponse({"data": Trips.objects.count()})
@@ -355,6 +385,9 @@ def index(request):
         elif(postData["type"]=="SendHomeName"):
             return JsonResponse({"data": sendhomename(postData)})
 
+        elif(postData["type"]=="SaveDefaultHomeName"):
+            return JsonResponse({"data": savedefaulthomename(postData)})
+        
         elif(postData["type"]=="SaveHomeName"):
             return JsonResponse({"data": savehomename(postData)})
 
