@@ -27,17 +27,16 @@ def makeroute(numdays,places,times,staytimeplaces):
 
 def computestandarddev(arr):
     num = len(arr)
-    mean = sum(arr)/num
+    mean = lpSum(arr)*(1/num)
     differences = [x - mean for x in arr]
-    sq_differences = [d ** 2 for d in differences]
-    ssd = sum(sq_differences)
-    sd = sqrt(ssd/num)
-    return sd
+    sq_differences = [d * d for d in differences]
+    ssd = lpSum(sq_differences)
+    return ssd
 
 def getstandarddev(numdays,places,starttimevars):
     coll = []
     for i in range(0,len(places)):
-        ind = value(starttimevars[i])/1440
+        ind = starttimevars[i]*(1/1440)
         coll.append(ind)
     sd = computestandarddev(coll)
     return sd
