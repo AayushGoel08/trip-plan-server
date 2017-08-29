@@ -29,7 +29,7 @@ def computestandarddev(arr):
     num = len(arr)
     mean = lpSum(arr)*(1/num)
     differences = [x - mean for x in arr]
-    sq_differences = [d * d for d in differences]
+    sq_differences = [d ** 2 for d in differences]
     ssd = lpSum(sq_differences)
     return ssd
 
