@@ -284,49 +284,52 @@ def index(request):
                 temp = x.split("-")
                 homedurations[temp[0]] = int(temp[1])
             response = ilp(postData["city"],sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
-            routeSaveString = ""
-            routeSaveTimes = ""
-            routeDispTimes = []
-            routeCloseTimes = []
-            for i in range(0,len(response[3])):
-                routeDispTimes.append("Home-")
-                routeCloseTimes.append("Home-")
-                tempLocs = response[2][i].split("-")
-                tempStr = response[3][i].split("-")
-                for y in tempLocs:
-                    if(y!="Home"):
-                        loc = LocStore.objects.get(locid = int(y), city = postData["city"])
-                        if(loc.acttype=="Regular"):
-                            hour = loc.hours.split(" - ")[1].split(" to ")[1].split(":")
-                            closetime = ""
-                            if(len(hour)==2):
-                                closetime = datetime.time(int(hour[0]),int(hour[1])).strftime("%I:%M %p")
+            if(response[1]=="Solution not found"):
+                return JsonResponse({"found": "No"});
+            else:
+                routeSaveString = ""
+                routeSaveTimes = ""
+                routeDispTimes = []
+                routeCloseTimes = []
+                for i in range(0,len(response[3])):
+                    routeDispTimes.append("Home-")
+                    routeCloseTimes.append("Home-")
+                    tempLocs = response[2][i].split("-")
+                    tempStr = response[3][i].split("-")
+                    for y in tempLocs:
+                        if(y!="Home"):
+                            loc = LocStore.objects.get(locid = int(y), city = postData["city"])
+                            if(loc.acttype=="Regular"):
+                                hour = loc.hours.split(" - ")[1].split(" to ")[1].split(":")
+                                closetime = ""
+                                if(len(hour)==2):
+                                    closetime = datetime.time(int(hour[0]),int(hour[1])).strftime("%I:%M %p")
+                                else:
+                                    closetime = datetime.time(int(hour[0]),0).strftime("%I:%M %p")
+                                routeCloseTimes[i] = routeCloseTimes[i]+closetime+"-"
                             else:
-                                closetime = datetime.time(int(hour[0]),0).strftime("%I:%M %p")
-                            routeCloseTimes[i] = routeCloseTimes[i]+closetime+"-"
-                        else:
-                            routeCloseTimes[i] = routeCloseTimes[i]+"N/A"+"-"
-                routeCloseTimes[i] = routeCloseTimes[i]+"Home"
+                                routeCloseTimes[i] = routeCloseTimes[i]+"N/A"+"-"
+                    routeCloseTimes[i] = routeCloseTimes[i]+"Home"
                         
-                for x in tempStr:
-                    if(x!="Home"):
-                        dispDate = start+datetime.timedelta(minutes=float(x))
-                        dispTime = dispDate.time().strftime("%I:%M %p")
-                        routeDispTimes[i] = routeDispTimes[i]+dispTime+"-"
-                routeDispTimes[i] = routeDispTimes[i]+"Home"
-            for i in range(0,len(response[2])-1):
-                routeSaveString = routeSaveString + response[2][i]+";"
-                routeSaveTimes = routeSaveTimes + response[3][i]+";"
-            routeSaveString = routeSaveString + response[2][len(response[2])-1]
-            routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
-            userTrip.actuals = routeSaveString
-            userTrip.actualstime = routeSaveTimes
-            userTrip.status = 2
-            userTrip.save()
-            timedata = []
-            for i in range(0,len(response[0])):
-                timedata.append(str(response[0][i])+"-"+str(response[4][i]))
-            return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end], "disptimes": routeDispTimes, "closetime": routeCloseTimes, "intervals": timedata})
+                    for x in tempStr:
+                        if(x!="Home"):
+                            dispDate = start+datetime.timedelta(minutes=float(x))
+                            dispTime = dispDate.time().strftime("%I:%M %p")
+                            routeDispTimes[i] = routeDispTimes[i]+dispTime+"-"
+                    routeDispTimes[i] = routeDispTimes[i]+"Home"
+                for i in range(0,len(response[2])-1):
+                    routeSaveString = routeSaveString + response[2][i]+";"
+                    routeSaveTimes = routeSaveTimes + response[3][i]+";"
+                routeSaveString = routeSaveString + response[2][len(response[2])-1]
+                routeSaveTimes = routeSaveTimes + response[3][len(response[3])-1]
+                userTrip.actuals = routeSaveString
+                userTrip.actualstime = routeSaveTimes
+                userTrip.status = 2
+                userTrip.save()
+                timedata = []
+                for i in range(0,len(response[0])):
+                    timedata.append(str(response[0][i])+"-"+str(response[4][i]))
+                return JsonResponse({"data": response[0], "found": response[1], "locsdata": locdata, "routes": response[2], "dates": [start, end], "disptimes": routeDispTimes, "closetime": routeCloseTimes, "intervals": timedata})
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
