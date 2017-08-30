@@ -349,6 +349,11 @@ def index(request):
             userentries = {"records": [[entry.city,entry.cityid,entry.defaulthome] for entry in cities]}
             return JsonResponse({"data": userentries})
 
+        elif(postData["type"]=="GetCityNames"):
+            cities = Cities.objects.all()
+            userentries = [entry.city for entry in cities]
+            return JsonResponse({"data": userentries})
+
         elif(postData["type"]=="DeleteAllCity"):
             Cities.objects.all().delete()
             return JsonResponse({"data": Cities.objects.count()})
