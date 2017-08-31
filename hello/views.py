@@ -191,9 +191,9 @@ def gethomedata(postData):
     return [s[0],s[1],lat,lng]
 
 def checkrecords(postData):
-    for loc in LocStore.objects.filter(city = postData["city"],start=postData["start"],end=postData["end"]):
+    for loc in LocStore.objects.filter(city = postData["city"]):
         try:
-            timepoint = dateconversion(start,end,loc.acttype,loc.hours)
+            timepoint = dateconversion(postData["start"],postData["end"],loc.acttype,loc.hours)
         except:
             return [loc.locid,loc.acttype,loc.hours]
     return "Done"
