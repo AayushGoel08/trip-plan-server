@@ -97,7 +97,7 @@ def gethomedistances(userTrip, name):
         else:
             distances.append(str(locs[i].locid)+"-"+str(timenum))
       except:
-          distances.append(str(locs[i].locid)+"-"+str(10000))
+        distances.append(str(locs[i].locid)+"-"+str(10000))
 
     distancestring = ";".join(distances)
     userTrip.homedistances = distancestring
