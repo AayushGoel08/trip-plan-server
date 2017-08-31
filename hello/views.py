@@ -68,7 +68,11 @@ def getPlaces(routeArr):
 
 def gethomedistances(userTrip, name):
     distances = []
-    locs = LocStore.objects.filter(city = userTrip.city)
+    possibles = userTrip.possibles
+    possibles = userTrip.possibles.split(",")
+    for i in range(0,len(possibles)):
+        possibles[i] = int(possibles[i])
+    locs = LocStore.objects.filter(locid__in = possibles, city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     i = 0
     while i < len(locs):
