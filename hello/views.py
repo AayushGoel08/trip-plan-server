@@ -588,9 +588,9 @@ def bookings(request):
 
             elif(postData["type"]=="BookingRequest"):
                 userTrip = Trips.objects.get(tripid = int(postData["tripid"]), city = postData["city"], fbid = postData["fbid"])
-                if(userTrip.status==5):
+                if(userTrip.status>=3):
                     return JsonResponse({"status": 3, "message": "Already booked"})
-                else:
+                elif(userTrip.status==2):
                     for x in postData["locs"]:
                         datasend = {}
                         datasend["fbid"] = postData["fbid"]
