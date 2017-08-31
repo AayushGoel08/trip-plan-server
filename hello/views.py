@@ -177,10 +177,10 @@ def savedefaulthomename(postData):
     data = requests.get(url).json()
     lat = data['results'][0]['geometry']['location']['lat']
     lng = data['results'][0]['geometry']['location']['lng']
-    userTrip.status = 1
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
-    userTrip.save()
     gethomedistances(userTrip, userTrip.homename)
+    userTrip.status = 1
+    userTrip.save()
     return "Default Home location saved"
 
 def savehomename(postData):
