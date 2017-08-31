@@ -190,7 +190,14 @@ def gethomedata(postData):
     s.append(', '.join(temp[n:]))
     return [s[0],s[1],lat,lng]
 
-    
+def checkrecords(postData):
+    for loc in LocStore.objects.filter(city = postData["city"],start=postData["start"],end=postData["end"]):
+        try:
+            timepoint = dateconversion(start,end,loc.acttype,loc.hours)
+        except:
+            return [loc.locid,loc.acttype,loc.hours]
+    return "Done"
+
 def insertTripRecord(postData):
     tripid = Trips.objects.filter(fbid = postData["fbid"],city = postData["city"]).count()+1
     start = datetime.datetime.strptime(postData["start"], "%Y-%m-%d %H:%M")
