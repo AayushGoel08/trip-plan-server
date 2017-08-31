@@ -234,7 +234,7 @@ def dateconversion(start, end, acttype,hours):
 def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, homedurations):
     distances = []
 
-    with open("praguedistances.txt") as f:
+    with open(city.lower()+"distances.txt") as f:
         distances = f.readlines()
     distances = [x.strip() for x in distances]
 
