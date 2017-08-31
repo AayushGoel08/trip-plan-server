@@ -194,8 +194,8 @@ def checkrecords(postData):
     for loc in LocStore.objects.filter(city = postData["city"]):
         try:
             timepoint = dateconversion(postData["start"],postData["end"],loc.acttype,loc.hours)
-        except:
-            return [loc.locid,loc.acttype,loc.hours]
+        except Exception as e:
+            return [loc.locid,loc.acttype,loc.hours,str(e)]
     return "Done"
 
 def insertTripRecord(postData):
