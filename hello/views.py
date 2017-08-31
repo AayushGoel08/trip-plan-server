@@ -191,14 +191,15 @@ def gethomedata(postData):
     return [s[0],s[1],lat,lng]
 
 def checkrecords(postData):
+    wrongs = []
     for loc in LocStore.objects.filter(city = postData["city"]):
         start = datetime.datetime.strptime(postData["start"], "%Y-%m-%d %H:%M")
         end = datetime.datetime.strptime(postData["end"], "%Y-%m-%d %H:%M")
         try:
             timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         except Exception as e:
-            return [loc.locid,loc.acttype,loc.hours,str(e)]
-    return "Done"
+            wrong.append([loc.locid,loc.acttype,loc.hours,str(e)])
+    return wrongs
 
 def insertTripRecord(postData):
     tripid = Trips.objects.filter(fbid = postData["fbid"],city = postData["city"]).count()+1
