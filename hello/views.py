@@ -71,7 +71,7 @@ def gethomedistances(userTrip, name):
     locs = LocStore.objects.filter(city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     for i in range(0,len(locs)):
-        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+name+"&destinations="+locs[i].address+"&mode=walking&key="+key
+        string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+name+" "+userTrip.city+"&destinations="+locs[i].address+" "+city+"&mode=walking&key="+key
         data = requests.get(string).json()
         time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
         timenum = 0
@@ -80,7 +80,21 @@ def gethomedistances(userTrip, name):
             timenum = int(time[0])
         else:
             timenum = (int(time[0])*60) + (int(time[2]))
-        distances.append(str(locs[i].locid)+"-"+str(timenum))
+        if(timenum>45):
+            string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+name+" "+userTrip.city+"&destinations="+locs[i].address+" "+userTrip.city+"&mode=transit&key="+key
+            data = requests.get(string).json()
+            if(data['rows'][0]['elements'][0]['status']=="ZERO_RESULTS"):
+                distances.append(str(locs[i].locid)+"-"+str(timenum))
+            else:
+                time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
+                timetransit = 0        
+                if(len(time)==2):
+                    timetransit = int(time[0])
+                else:
+                    timetransit = (int(time[0])*60) + (int(time[2]))
+                distances.append(str(locs[i].locid)+"-"+str(timetransit))
+        else:
+            distances.append(str(locs[i].locid)+"-"+str(timenum))
 
     distancestring = ";".join(distances)
     userTrip.homedistances = distancestring
