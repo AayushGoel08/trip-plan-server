@@ -75,7 +75,7 @@ def gethomedistances(userTrip, name):
     locs = LocStore.objects.filter(locid__in = possibles, city = userTrip.city)
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     i = 0
-    while i < len(locs):
+    for i in range(0,len(locs)):
         try:
             string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+name+" "+userTrip.city+"&destinations="+locs[i].address+" "+userTrip.city+"&mode=walking&key="+key
             data = requests.get(string).json()
@@ -101,9 +101,8 @@ def gethomedistances(userTrip, name):
                     distances.append(str(locs[i].locid)+"-"+str(timetransit))
             else:
                 distances.append(str(locs[i].locid)+"-"+str(timenum))
-            i = i+1
         except:
-            i = i+0
+            distances.append(str(locs[i].locid)+"-"+str(10000))
 
     distancestring = ";".join(distances)
     userTrip.homedistances = distancestring
