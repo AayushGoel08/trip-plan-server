@@ -198,7 +198,7 @@ def checkrecords(postData):
         try:
             timepoint = dateconversion(start,end,loc.acttype,loc.hours)
         except Exception as e:
-            wrong.append([loc.locid,loc.acttype,loc.hours,str(e)])
+            wrongs.append([loc.locid,loc.acttype,loc.hours,str(e)])
     return wrongs
 
 def insertTripRecord(postData):
