@@ -728,6 +728,11 @@ def entries(request):
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
                 return JsonResponse({"data": userentries})
 
+            elif(postData["type"]=="CheckRecords"):
+                res = checkrecords(postData)
+                #userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
+                return JsonResponse({"data": res})
+
             elif(postData["type"]=="GetLocData"):
                 locs = LocStore.objects.filter(city = postData["city"],locid = postData["locid"])
                 userentries = {"records": [[loc.city,loc.locid,loc.name,loc.title,loc.hashtag,loc.description,loc.imagelink,loc.time,loc.rating,loc.price,loc.book,loc.deposit,loc.acttype,loc.hours,loc.provider,loc.website,loc.address,loc.coordinates] for loc in locs]}
