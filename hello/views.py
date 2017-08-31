@@ -187,9 +187,9 @@ def savehomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
     userTrip.homename = postData["name"]
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
+    gethomedistances(userTrip, postData["name"])
     userTrip.status = 1
     userTrip.save()
-    gethomedistances(userTrip, postData["name"])
     return "Home location saved"
 
 def gethomedata(postData):
