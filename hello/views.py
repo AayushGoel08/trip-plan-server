@@ -37,7 +37,7 @@ def getbookinglink(postData):
 def getpaymentlink(postData):
     url = "https://secure.payu.in/_payment"
     userTrip = Trips.objects.get(tripid = int(postData["tripid"]), city = postData["city"], fbid = postData["fbid"])
-    amount = float(postData["amount"])*80
+    amount = float(postData["amount"])*80*userTrip.group
     randomnum = random.randint(1,10000000)
 
     txnid = "A-"+str(randomnum)
