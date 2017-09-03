@@ -204,6 +204,7 @@ def sendhomename(postData):
     userTrip.status = 1
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
     userTrip.save()
+    gethomedistances(userTrip, lat, lng)
     return "Home location booked and saved"
 
 def savedefaulthomename(postData):
@@ -216,6 +217,7 @@ def savedefaulthomename(postData):
     lat = data['results'][0]['geometry']['location']['lat']
     lng = data['results'][0]['geometry']['location']['lng']
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
+    gethomedistances(userTrip, userTrip.homename)
     userTrip.status = 1
     userTrip.save()
     return "Default Home location saved"
@@ -224,6 +226,7 @@ def savehomename(postData):
     userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
     userTrip.homename = postData["name"]
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
+    gethomedistances(userTrip, postData["name"])
     userTrip.status = 1
     userTrip.save()
     return "Home location saved"
@@ -478,23 +481,6 @@ def index(request):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             userTrip.selections = "-".join(str(x) for x in postData["selections"])
             userTrip.traversions = "-".join(str(x) for x in postData["traversions"])
-            homedistances = []
-            if(userTrip.homedistances==""):
-                for x in postData["selections"]:
-                    loc = LocStore.objects.get(locid = x, city = userTrip.city) 
-                    timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
-                    homedistances.append(str(loc.locid)+"-"+str(timeact))
-                userTrip.homedistances = ";".join(homedistances)
-            else:
-                distancestring = userTrip.homedistances
-                existing = distancestring.split(";")
-                existingplaces = [x.split("-")[0] for x in existing]
-                for x in postData["selections"]:
-                    if x not in existingplaces:
-                        loc = LocStore.objects.get(locid = x, city = userTrip.city) 
-                        timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
-                        distancestring = distancestring+";"+str(x)+"-"+str(timeact)
-                userTrip.homedistances = distancestring
             userTrip.save()
             return JsonResponse({"data": "Updates performed"})
 
