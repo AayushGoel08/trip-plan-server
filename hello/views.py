@@ -24,7 +24,7 @@ def getGMapsDistance(origin,dest,city):
     error = ""
     while timeact == -1:
         try:
-            string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origin+" "+city+"&destinations="+destination+" "+city+"&mode=walking&key="+key
+            string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origin+" "+city+"&destinations="+dest+" "+city+"&mode=walking&key="+key
             data = requests.get(string).json()
             time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
             timenum = 0
