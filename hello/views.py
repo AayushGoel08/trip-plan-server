@@ -21,7 +21,6 @@ from ilp2 import *
 def getGMapsDistance(origin,dest,city):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     timeact = -1
-    error = ""
     while timeact == -1:
         try:
             string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origin+" "+city+"&destinations="+dest+" "+city+"&mode=walking&key="+key
@@ -49,9 +48,8 @@ def getGMapsDistance(origin,dest,city):
             else:
                 timeact = timenum
         except Exception as e:
-            timeact = 0
-            error = str(e)
-    return timeact, error
+            timeact = -1
+    return timeact
     
 
 def getbookinglink(postData):
@@ -484,9 +482,7 @@ def index(request):
             if(userTrip.homedistances==""):
                 for x in postData["selections"]:
                     loc = LocStore.objects.get(locid = x, city = userTrip.city)
-                    timeact,error = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
-                    if(error!=""):
-                        return JsonResponse({"error": error})
+                    timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
                     homedistances.append(str(loc.locid)+"-"+str(timeact))
                 userTrip.homedistances = ";".join(homedistances)
             else:
