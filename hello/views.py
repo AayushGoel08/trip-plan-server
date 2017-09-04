@@ -488,7 +488,7 @@ def index(request):
             else:
                 distancestring = userTrip.homedistances
                 existing = distancestring.split(";")
-                existingplaces = [x.split("-")[0] for x in existing]
+                existingplaces = [int(x.split("-")[0]) for x in existing]
                 for x in postData["selections"]:
                     if x not in existingplaces:
                         loc = LocStore.objects.get(locid = x, city = userTrip.city) 
