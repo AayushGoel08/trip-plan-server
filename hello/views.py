@@ -712,7 +712,7 @@ def bookings(request):
                         timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 else:
                     timeplaces.append([dateconversionsimple(start,timebooked[places.index(loc.locid)])])
-                staytimeplaces.append(loc.time)
+                staytimeplaces.append(int(loc.time))
                 locids.append(loc.locid)
                 locdata[loc.locid] = [loc.title,loc.book,loc.coordinates,loc.address] 
             locdata["Home"] = [userTrip.homecoordinates]
