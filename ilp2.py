@@ -329,7 +329,7 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
     for i in range(0,len(endtimevars)):
         if(i in range(0, len(places))):
            k = 0
-           #prob += endtimevars[i] - starttimevars[i] >= staytimeplaces[i], "Stay at place greater than required "+str(i)
+           prob += endtimevars[i] - starttimevars[i] >= staytimeplaces[i], "Stay at place greater than required "+str(i)
         else:
            prob += endtimevars[i] >= starttimevars[i], "Stay at place greater than required "+str(i)
         
