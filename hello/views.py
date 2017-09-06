@@ -693,24 +693,23 @@ def bookings(request):
             numduration = triplimit(start,end)
             for loc in locs:
                 if(timebooked[places.index(loc.locid)]=="N/A"):
-                    for loc in locs:
-                        if(loc.acttype=="Occurence"):
-                            tempprice = str(loc.price).split(", ")
-                            if(len(tempprice)==1):
-                                timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
-                            else:
-                                minprice = 10000
-                                pos = 0
-                                temptime = str(loc.time).split(", ")
-                                tempdates = loc.hours.split(", ")
-                                for i in range(0,len(tempprice)):
-                                    if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
-                                        if(int(tempprice[i])<minprice):
-                                            minprice = tempprice[i]
-                                            pos = i
-                                timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[pos]))
-                        else:
+                    if(loc.acttype=="Occurence"):
+                        tempprice = str(loc.price).split(", ")
+                        if(len(tempprice)==1):
                             timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
+                        else:
+                            minprice = 10000
+                            pos = 0
+                            temptime = str(loc.time).split(", ")
+                            tempdates = loc.hours.split(", ")
+                            for i in range(0,len(tempprice)):
+                                if(datetime.datetime.strptime(x, "%d %B %Y - %H:%M")<userTrip.end):
+                                    if(int(tempprice[i])<minprice):
+                                        minprice = tempprice[i]
+                                        pos = i
+                            timeplaces.append(dateconversion(start,end,loc.acttype,tempdates[pos]))
+                    else:
+                        timeplaces.append(dateconversion(start,end,loc.acttype,loc.hours))
                 else:
                     timeplaces.append([dateconversionsimple(start,timebooked[places.index(loc.locid)])])
                 staytimeplaces.append(loc.time)
