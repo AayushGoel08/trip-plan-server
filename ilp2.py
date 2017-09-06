@@ -304,6 +304,8 @@ def ilp(city,sleepstart, places, timeplaces, staytimeplaces, duration, numdays, 
             elif(locs[i][0]=="homeint"):
                 if(locs[j][0]=="home0"):
                     traveltime[i].append(1)
+                elif(locs[j][0]=="homeint"):
+                    traveltime[i].append(1)
                 else:
                     traveltime[i].append(homedurations[str(locs[j][1])])
             else:
