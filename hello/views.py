@@ -723,7 +723,7 @@ def bookings(request):
                 temp = x.split("-")
                 homedurations[temp[0]] = int(temp[1])
 
-            response = ilp(userTrip.city, sleepstart, [22,19],timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
+            response = ilp(userTrip.city, sleepstart, locids,timeplaces,staytimeplaces, numduration[0], numduration[1], homedurations)
             routeSaveString = ""
             routeSaveTimes = ""
             for i in range(0,len(response[2])-1):
