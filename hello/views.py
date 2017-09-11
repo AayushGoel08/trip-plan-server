@@ -935,4 +935,4 @@ def edit(request):
         return render(request, 'edit.html')
     
 def privacy(request):
-    return render(request, 'privacy.html')
+    return render(request, 'privacy.htm')
