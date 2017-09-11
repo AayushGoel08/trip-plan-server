@@ -21,8 +21,8 @@ from ilp2 import *
 def updatePossibles(postData):
     userTrips = Trips.objects.filter(city = postData["city"])
     for trip in userTrips:
-        start = userTrip.start
-        end = userTrip.end
+        start = trip.start
+        end = trip.end
         start = start.replace(tzinfo=None)
         end = end.replace(tzinfo=None)
         possibles = ""
