@@ -18,6 +18,24 @@ import random
 import requests
 from ilp2 import *
 
+def updatePossibles(postData):
+    userTrips = Trips.objects.filter(city = postData["city"])
+    for trip in userTrips:
+        start = userTrip.start
+        end = userTrip.end
+        start = start.replace(tzinfo=None)
+        end = end.replace(tzinfo=None)
+        possibles = ""
+        locsdata = []    
+        for loc in LocStore.objects.filter(city = postData["city"]):
+            timepoint = dateconversion(start,end,loc.acttype,loc.hours)
+            if(timepoint!=[]):
+                possibles = possibles+str(loc.locid)+","
+        possibles = possibles[:-1]
+        trip.possibles = possibles
+        trip.save()
+
+
 def getGMapsDistance(origin,dest,city):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     timeact = -1
@@ -401,6 +419,10 @@ def index(request):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             userTrip.delete()
             return JsonResponse({"message": "Trip Deleted"})
+
+        elif(postData["type"]=="UpdatePossibles"):
+            updatePossibles(postData)
+            return JsonResponse({"message": "Updated Possibles"})
 
         elif(postData["type"]=="Insert"):
             locsdata = insertTripRecord(postData)
