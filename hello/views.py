@@ -933,3 +933,6 @@ def edit(request):
             return render(request, 'edit.html')
     else:
         return render(request, 'edit.html')
+    
+def privacy(request):
+    return render(request, 'privacy.html')
