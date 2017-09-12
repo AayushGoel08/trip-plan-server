@@ -35,6 +35,19 @@ def updatePossibles(postData):
         trip.possibles = possibles
         trip.save()
 
+def getNewHomeDistances(userTrip):
+    selections = userTrip.selections.split("-")
+    selections = [int(x) for x in selections]
+    city = userTrip.city
+    origin = userTrip.homename
+    locs = LocStore.objects.filter(locid__in = possibles, city = userTrip.city)
+    distances = []
+    for loc in locs:
+        timeact = getGMapsDistance(origin, loc.address, city)
+        distances.append(str(loc.locid)+"-"+str(timeact))
+    distancestring = ";".join(distances)
+    userTrip.homedistances = distancestring
+    userTrip.save()
 
 def getGMapsDistance(origin,dest,city):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
@@ -222,6 +235,8 @@ def sendhomename(postData):
     userTrip.status = 1
     userTrip.homecoordinates = str(lat)+ " - " + str(lng)
     userTrip.save()
+    if(userTrip.homedistances!=""):
+        getNewHomeDistances(userTrip)
     return "Home location booked and saved"
 
 def savedefaulthomename(postData):
@@ -244,6 +259,8 @@ def savehomename(postData):
     userTrip.homecoordinates = str(postData["lat"])+ " - " + str(postData["lng"])
     userTrip.status = 1
     userTrip.save()
+    if(userTrip.homedistances!=""):
+        getNewHomeDistances(userTrip)
     return "Home location saved"
 
 def gethomedata(postData):
