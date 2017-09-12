@@ -433,7 +433,7 @@ def index(request):
             return JsonResponse({"data": Trips.objects.count()})
 
         elif(postData["type"]=="GetAllUsers"):
-            fbids = Trips.objects.values('fbid').distinct()
+            fbids = Trips.objects.values_list('fbid',flat= True).distinct()
             return JsonResponse({"users": fbids})
 
         elif(postData["type"]=="DeleteTrip"):
