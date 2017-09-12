@@ -52,6 +52,7 @@ def getNewHomeDistances(userTrip):
 def getGMapsDistance(origin,dest,city):
     key = "AIzaSyDEt4Ok7w7mo_zOZlT9Y8CI3v6-j9lU8xQ"
     timeact = -1
+    k = 0
     while timeact == -1:
         try:
             string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origin+" "+city+"&destinations="+dest+" "+city+"&mode=walking&key="+key
@@ -80,6 +81,18 @@ def getGMapsDistance(origin,dest,city):
                 timeact = timenum
         except Exception as e:
             timeact = -1
+            k = k+1
+            if(k>=10):
+                string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origin+" "+city+"&destinations="+dest+" "+city+"&key="+key
+                data = requests.get(string).json()
+                time = data['rows'][0]['elements'][0]['duration']['text'].split(" ")
+                timenum = 0
+            
+                if(len(time)==2):
+                    timenum = int(time[0])
+                else:
+                    timenum = (int(time[0])*60) + (int(time[2]))
+                timeact = timenum
     return timeact
     
 
