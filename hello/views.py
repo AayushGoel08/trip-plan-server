@@ -432,6 +432,10 @@ def index(request):
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
 
+        elif(postData["type"]=="GetAllUsers"):
+            fbids = Trips.objects.values('fbid').distinct()
+            return JsonResponse({"users": fbids})
+
         elif(postData["type"]=="DeleteTrip"):
             userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
             userTrip.delete()
