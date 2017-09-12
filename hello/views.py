@@ -40,7 +40,7 @@ def getNewHomeDistances(userTrip):
     selections = [int(x) for x in selections]
     city = userTrip.city
     origin = userTrip.homename
-    locs = LocStore.objects.filter(locid__in = possibles, city = userTrip.city)
+    locs = LocStore.objects.filter(locid__in = selections, city = userTrip.city)
     distances = []
     for loc in locs:
         timeact = getGMapsDistance(origin, loc.address, city)
