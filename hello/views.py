@@ -455,7 +455,7 @@ def index(request):
             return JsonResponse({"data": Trips.objects.count()})
 
         elif(postData["type"]=="TryWorker"):
-            result = q.enqueue(trialWorker, 'http://heroku.com')
+            result = q.enqueue(trialWorker)
             return JsonResponse({"message": "Tried"})
 
         elif(postData["type"]=="GetAllUsers"):
