@@ -43,6 +43,7 @@ def updatePossibles(postData):
 def trialWorker():
     userTrip = Trips.objects.get(fbid="10213544574914597",city="Barcelona", tripid=1)
     userTrip.selections = userTrip.selections + "6"
+    userTrip.save()
 
 def getNewHomeDistances(userTrip):
     selections = userTrip.selections.split("-")
