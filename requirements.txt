@@ -5,4 +5,5 @@ psycopg2==2.6.2
 whitenoise==2.0.6
 requests==2.9.1
 pulp==1.6.5
+rq==0.8.2
 
