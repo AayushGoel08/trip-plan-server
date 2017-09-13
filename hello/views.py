@@ -18,6 +18,11 @@ import random
 import requests
 from ilp2 import *
 
+from rq import Queue
+from worker import conn
+
+q = Queue(connection=conn)
+
 def updatePossibles(postData):
     userTrips = Trips.objects.filter(city = postData["city"])
     for trip in userTrips:
@@ -34,6 +39,10 @@ def updatePossibles(postData):
         possibles = possibles[:-1]
         trip.possibles = possibles
         trip.save()
+
+def trialWorker():
+    userTrip = Trips.objects.get(fbid="10213544574914597",city="Barcelona", tripid=1)
+    userTrip.selections = userTrip.selections + "6"
 
 def getNewHomeDistances(userTrip):
     selections = userTrip.selections.split("-")
@@ -444,6 +453,10 @@ def index(request):
 
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
+
+        elif(postData["type"]=="TryWorker"):
+            result = q.enqueue(trialWorker, 'http://heroku.com')
+            return JsonResponse({"message": "Tried"})
 
         elif(postData["type"]=="GetAllUsers"):
             fbids = list(Trips.objects.values_list('fbid',flat= True).distinct())            
