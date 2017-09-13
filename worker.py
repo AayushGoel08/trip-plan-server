@@ -12,7 +12,6 @@ redis_url = os.getenv('REDISTOGO_URL', 'redis://redistogo:f5acd0aff98e5377361eb9
 conn = redis.from_url(redis_url)
 
 if __name__ == '__main__':
-    django.setup()
     settings.configure()
     with Connection(conn):
         worker = Worker(map(Queue, listen))
