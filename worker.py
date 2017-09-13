@@ -14,7 +14,6 @@ conn = redis.from_url(redis_url)
 if __name__ == '__main__':
     os.environ["DJANGO_SETTINGS_MODULE"] = "gettingstarted.settings"
     application = get_wsgi_application()
-    settings.configure()
     with Connection(conn):
         worker = Worker(map(Queue, listen))
         worker.work()
