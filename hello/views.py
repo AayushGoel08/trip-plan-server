@@ -482,6 +482,11 @@ def index(request):
             userTrip.delete()
             return JsonResponse({"message": "Trip Deleted"})
 
+        elif(postData["type"]=="DeleteTripById"):
+            userTrip = Trips.objects.get(id = postData["id"])
+            userTrip.delete()
+            return JsonResponse({"message": "Trip Deleted"})
+
         elif(postData["type"]=="UpdatePossibles"):
             updatePossibles(postData)
             return JsonResponse({"message": "Updated Possibles"})
@@ -524,7 +529,7 @@ def index(request):
 
         elif(postData["type"]=="GetAllData"):
             usertrips = Trips.objects.all()
-            userentries = {"records": [[entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions, entry.email, entry.paysum] for entry in usertrips]}
+            userentries = {"records": [[entry.id, entry.fbid, entry.city,entry.start,entry.end, entry.status, entry.possibles, entry.actuals, entry.actualstime, entry.tripid, entry.homename, entry.homecoordinates, entry.homedistances, entry.group, entry.selections, entry.traversions, entry.email, entry.paysum] for entry in usertrips]}
             return JsonResponse({"data": userentries})
 
         elif(postData["type"]=="GetHomeForEdit"):
