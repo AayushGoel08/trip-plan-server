@@ -40,11 +40,6 @@ def updatePossibles(postData):
         trip.possibles = possibles
         trip.save()
 
-def trialWorker():
-    userTrip = Trips.objects.get(fbid="10213544574914597",city="Barcelona", tripid=1)
-    userTrip.selections = userTrip.selections + "6"
-    userTrip.save()
-
 def getNewHomeDistances(userTrip):
     selections = userTrip.selections.split("-")
     selections = [int(x) for x in selections]
@@ -153,6 +148,29 @@ def getPlaces(routeArr):
             if(x!="Home"):
                 places.append(int(x))
     return places
+
+def updateSelections(postData):
+    userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
+    userTrip.selections = "-".join(str(x) for x in postData["selections"])
+    userTrip.traversions = "-".join(str(x) for x in postData["traversions"])
+    homedistances = []
+    if(userTrip.homedistances==""):
+        for x in postData["selections"]:
+            loc = LocStore.objects.get(locid = x, city = userTrip.city)
+            timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
+            homedistances.append(str(loc.locid)+"-"+str(timeact))
+        userTrip.homedistances = ";".join(homedistances)
+    else:
+        distancestring = userTrip.homedistances
+        existing = distancestring.split(";")
+        existingplaces = [int(x.split("-")[0]) for x in existing]
+        for x in postData["selections"]:
+            if x not in existingplaces:
+                loc = LocStore.objects.get(locid = x, city = userTrip.city) 
+                timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
+                distancestring = distancestring+";"+str(x)+"-"+str(timeact)
+        userTrip.homedistances = distancestring
+    userTrip.save()
 
 def gethomedistances(userTrip, name):
     distances = []
@@ -455,10 +473,6 @@ def index(request):
         elif(postData["type"]=="Count"):
             return JsonResponse({"data": Trips.objects.count()})
 
-        elif(postData["type"]=="TryWorker"):
-            result = q.enqueue(trialWorker)
-            return JsonResponse({"message": "Tried"})
-
         elif(postData["type"]=="GetAllUsers"):
             fbids = list(Trips.objects.values_list('fbid',flat= True).distinct())            
             return JsonResponse({"users": fbids})
@@ -545,27 +559,7 @@ def index(request):
             return JsonResponse({"data": "Updates performed"})
 
         elif(postData["type"]=="UpdateSelections"):
-            userTrip = Trips.objects.get(fbid = postData["fbid"], tripid = postData["tripid"], city = postData["city"])
-            userTrip.selections = "-".join(str(x) for x in postData["selections"])
-            userTrip.traversions = "-".join(str(x) for x in postData["traversions"])
-            homedistances = []
-            if(userTrip.homedistances==""):
-                for x in postData["selections"]:
-                    loc = LocStore.objects.get(locid = x, city = userTrip.city)
-                    timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
-                    homedistances.append(str(loc.locid)+"-"+str(timeact))
-                userTrip.homedistances = ";".join(homedistances)
-            else:
-                distancestring = userTrip.homedistances
-                existing = distancestring.split(";")
-                existingplaces = [int(x.split("-")[0]) for x in existing]
-                for x in postData["selections"]:
-                    if x not in existingplaces:
-                        loc = LocStore.objects.get(locid = x, city = userTrip.city) 
-                        timeact = getGMapsDistance(userTrip.homename,loc.address,userTrip.city)
-                        distancestring = distancestring+";"+str(x)+"-"+str(timeact)
-                userTrip.homedistances = distancestring
-            userTrip.save()
+            q.enqueue(updateSelections,postData)
             return JsonResponse({"data": "Updates performed"})
 
         elif(postData["type"]=="RevertBookings"):
